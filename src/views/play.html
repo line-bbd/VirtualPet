@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Virtual Pet</title>
-    <link rel="stylesheet" href="/public/css/main.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- import actions script -->
+    <script src="js/actions.js"></script>
 </head>
 
 <body>
@@ -26,9 +29,20 @@
             </ul>
         </section>
         <section id="pet-actions" class="row">
+            <h2>Actions for api testing purposes</h2>
+            <button onclick="feed()">Feed</button>
+            <button onclick="giveWater()">Give water</button>
+            <button onclick="giveAttention()">Pet</button>
+            <button onclick="giveMedicine()">Give medicine</button>
+            <button onclick="bath()">Bath</button>
+            <button onclick="giveTreat()">Give treat</button>
+            <button onclick="giveToy()">Give toy</button>
+            <button onclick="sleep()">Put to bed</button>
+        </section>
+        <section id="navigation" class="row">
             <h2>Navigate to another page:</h2>
             <ul>
-                <li><a href="/login">Login</a></li>
+                <li><a href="/index">Login</a></li>
                 <li><a href="/register">Register</a></li>
                 <li><a href="/dashboard">Dashboard</a></li>
                 <li><a href="/adopt">Adopt a pet</a></li>
