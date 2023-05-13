@@ -9,16 +9,25 @@ app.use(express.static("public"));
 app.use("/css", express.static(__dirname + "public/css"));
 app.use("/js", express.static(__dirname + "public/js"));
 app.use("/img", express.static(__dirname + "public/img"));
+app.use("/animationModels", express.static(__dirname + "public/animationModels"));
 
 // set views
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/src/views/index.html");
 });
 
+app.get("/viewPet", (req, res) => {
+  res.sendFile(__dirname + "/src/views/animation.html");
+});
+
 // set routes
 const router = require("./src/routes/index");
 
 app.use("/", router);
+
+// const routerPetAnim = require("./src/routes/pet-animation");
+// app.use("/viewPet", routerPetAnim);
+
 
 // handle different requests
 app.get("/feed", (req, res) => {
@@ -41,3 +50,5 @@ app.get("*", (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+
