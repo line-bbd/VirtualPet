@@ -10,10 +10,16 @@
       mixer,                              
       idle,
       click_anim,                               
-      clock = new THREE.Clock(),          
+      clock = new THREE.Clock(),
+      loader,         
       currentlyAnimating = false,         
-      raycaster = new THREE.Raycaster(), 
-      loaderAnim = document.getElementById('js-loader');
+      raycaster = new THREE.Raycaster();
+
+      const modelPath = 'animationModels/pets/pixelDog.glb';
+      const dogBowlPath = 'animationModels/pets/bowl.glb';
+      const naturePrefixPath = 'animationModels/nature/';
+      const housePrefixPath = 'animationModels/house/';
+
     init(); 
 
 
@@ -46,7 +52,7 @@
             
           });
 
-        model.scale.set(3.5, 3.5, 3.5);
+        model.scale.set(3, 3, 3);
 
         model.position.y = -11;
         model.rotation.y = 0.3;
@@ -64,11 +70,224 @@
         click_anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Eating'));
     }
 
+    function createPathStrings(filename) {
+        const basePath = "textures/clouds/";
+        const baseFilename = basePath + filename;
+        const fileType = ".jpg";
+        const sides = ["ft", "bk", "up", "dn", "rt", "lf"];
+        const pathStings = sides.map(side => {
+            return baseFilename + "_" + side + fileType;
+        });
+        console.log(pathStings)
+        return pathStings;
+    }
+
+    //function to create the floor,sky
+    function loadBackground()
+    {
+        let groundTexture = new THREE.TextureLoader().load( 'textures/Grass_01.png' );
+        groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+        groundTexture.repeat.set( 10000, 10000 );
+
+        const normalTexture = new THREE.TextureLoader().load(
+            'textures/Grass_01_Nrm.png'
+        )
+
+        let groundMaterial = new THREE.MeshStandardMaterial( { map: groundTexture } );
+
+        let floorMesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 10000, 10000 ), groundMaterial );
+        floorMesh.rotation.x = -0.5 * Math.PI; 
+        floorMesh.receiveShadow = true;
+        floorMesh.position.y = -11;
+        floorMesh.normalTexture = normalTexture;
+        scene.add( floorMesh );
+
+        let ctl = new THREE.CubeTextureLoader();
+        let cubeTexture = ctl.load(createPathStrings('bluecloud'));
+        scene.background = cubeTexture;
+    }
+
+    function createModel(gltf,scale,x,y,z,randomness)
+    {
+        model = gltf.scene.clone();
+        model.traverse(o => {
+            if (o.isMesh) {
+
+              o.castShadow = false;
+              o.receiveShadow = false;
+            }
+          });
+
+        model.scale.set(scale,scale,scale);
+        model.position.set(x + randomness,y,z + randomness*2);
+        return model;
+
+    }
+
+    function loadNature()
+    {
+        let randomMove;
+        loader.load(
+            naturePrefixPath + 'tree_oak.glb',
+            function(gltf) {
+
+                for (let x = -40; x < 0; x = x +10) {
+                    randomMove = Math.floor(Math.random() * 5 );
+                    scene.add(createModel(gltf,15,x,-7.5,-13,randomMove));   
+                }
+            }
+        );
+
+        loader.load(
+            naturePrefixPath + 'tree_pineSmallA.glb',
+            function(gltf) {
+                for (let x = -70; x <= -10; x = x +10) {
+                    randomMove = Math.floor(Math.random() * 5 );
+                    scene.add(createModel(gltf,15,x,-7.5,-40,randomMove));
+
+                }
+            }
+        );
+
+        loader.load(
+            naturePrefixPath + 'path_stone.glb',
+            function(gltf) {
+
+                let model = createModel(gltf,9,-25,-10.5,-10,0);
+                model.rotation.y = -0.4 * Math.PI;
+                scene.add(model);
+
+                model = createModel(gltf,9,-20,-10.5,2,0);
+                model.rotation.y = -0.4 * Math.PI;
+                scene.add(model);
+
+                model = createModel(gltf,8,-16,-10.5,12,0);
+                model.rotation.y = -0.4 * Math.PI;
+                scene.add(model);
+            }
+        );
+
+        loader.load(
+            naturePrefixPath + 'grass_large.glb',
+            function(gltf) {
+                for (let x = -45; x <= -30; x = x +5) {
+                    randomMove = Math.floor(Math.random() * (2) - 2)
+                    let model = createModel(gltf,20,x,-7,-12,0);
+                    scene.add(model);
+                }
+
+                for (let x = -17; x <= 2; x = x +5) {
+                    randomMove = Math.floor(Math.random() * (2) - 2)
+                    let model = createModel(gltf,20,x,-7,-12,0);
+                    scene.add(model);
+                }
+
+            }
+        );
+    }
+
+    function loadHouse()
+    {
+        loader.load(
+            housePrefixPath + 'house_type03.glb',
+            function(gltf) {
+                let model = createModel(gltf,20,20,-5,-10,0);
+                model.rotation.y = -0.1 * Math.PI;
+                scene.add(model);
+            }
+        );
+
+        loader.load(
+            housePrefixPath + 'path_tilesLong.glb',
+            function(gltf) {
+                let model = createModel(gltf,20,9.7,-5,9,0);
+                model.rotation.y = -0.1 * Math.PI;
+                model.scale.set(20,20,40);
+                scene.add(model);
+                    
+            }
+        );
+    }
+// TODO Use the css file for the colours
+    function makeButton(radiusX,radiusY,x,y,z,borderColor,color,words)
+    {
+        let path = new THREE.Shape();
+        path.absellipse(0,0,radiusX+0.2,radiusY+0.2,0, Math.PI*2, false,0);
+        let geometry = new THREE.ShapeBufferGeometry( path );
+        let material = new THREE.MeshBasicMaterial( { color: borderColor} );
+        let border = new THREE.Mesh( geometry, material );
+        border.position.set(x,y,z);
+        border.renderOrder = 997;
+        scene.add(border)
+        border.material.depthTest = false;
+        border.material.depthWrite = false;
+        border.onBeforeRender = function (renderer) { renderer.clearDepth(); };
+
+
+        path = new THREE.Shape();
+        path.absellipse(0,0,radiusX,radiusY,0, Math.PI*2, false,0);
+        geometry = new THREE.ShapeBufferGeometry( path );
+        material = new THREE.MeshBasicMaterial( { color: color} );
+        let button = new THREE.Mesh( geometry, material );
+        button.position.set(x,y,z);
+
+        button.renderOrder = 998;
+        button.material.depthTest = false;
+        button.material.depthWrite = false;
+        button.onBeforeRender = function (renderer) { renderer.clearDepth(); };
+        scene.add(button);
+
+        const loader = new THREE.FontLoader();
+        loader.load( 'fonts/helvetiker_bold.typeface.json', function ( font ) {
+
+            const textGeo = new THREE.TextGeometry( "Feed", {
+        
+                font: font,
+                size: 5,
+                height: 1,
+        
+            } );
+        
+            const textMaterial = new THREE.MeshPhongMaterial( { color: color } );
+        
+            const mesh = new THREE.Mesh( textGeo, textMaterial );
+            mesh.position.set( 30, -17, -20 );
+            // mesh.rotation.y = -0.1 * Math.PI;
+            mesh.renderOrder = 999;
+
+
+            scene.add( mesh );
+        });
+        return button;
+    }
+
+    function loadButtons()
+    {
+        
+    }
+
     function init() {
 
-        const modelPath = 'animationModels/pixelDog.glb';
-        
-        let loader = new THREE.GLTFLoader();
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(
+            50,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        camera.position.z = 40 
+        camera.position.x = 0;
+        camera.position.y = -3;
+
+        const canvas = document.querySelector('#canvas');
+
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.shadowMap.enabled = true;
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        loader = new THREE.GLTFLoader();
 
         loader.load(
             modelPath,
@@ -82,8 +301,7 @@
                 console.error(error);
             }
         );
-
-        const dogBowlPath = 'animationModels/bowl.glb';
+//TODO: use the other functions to make this neater
 
         loader.load(
             dogBowlPath,
@@ -112,35 +330,15 @@
             }
         );
 
-
-        const canvas = document.querySelector('#canvas');
-        const backgroundColor = 0xf1f1f1;
-        
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(backgroundColor);
-
-        // Init the renderer
-        renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-        renderer.shadowMap.enabled = true;
-        renderer.setPixelRatio(window.devicePixelRatio);
-        document.body.appendChild(renderer.domElement);
-
-        // Add a camera
-        camera = new THREE.PerspectiveCamera(
-            50,
-            window.innerWidth / window.innerHeight,
-            0.1,
-            1000
-        );
-        camera.position.z = 40 
-        camera.position.x = 0;
-        camera.position.y = -3;
+        loadBackground();
+        loadNature();
+        loadHouse();
+        loadButtons();
 
         // Add lights
-        let hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
-        hemiLight.position.set(0, 50, 0);
-        // Add hemisphere light to scene
-        scene.add(hemiLight);
+        let ambLight = new THREE.AmbientLight(0xffffff, 0.4);
+        ambLight.position.set(0, 50, 0);
+        scene.add(ambLight);
 
         let d = 8.25;
         let dirLight = new THREE.DirectionalLight(0xffffff, 3.5);
@@ -153,30 +351,8 @@
         dirLight.shadow.camera.right = d;
         dirLight.shadow.camera.top = d;
         dirLight.shadow.camera.bottom = d * -1;
-        // Add directional Light to scene
         scene.add(dirLight);
 
-        // Floor
-        let floorGeometry = new THREE.PlaneGeometry(5000, 5000, 1, 1);
-        let floorMaterial = new THREE.MeshPhongMaterial({
-        color: 0xeeeeee,
-        shininess: 0,
-        });
-
-        let floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.rotation.x = -0.5 * Math.PI; 
-        floor.receiveShadow = true;
-        floor.position.y = -11;
-        scene.add(floor);
-
-        // let geometry = new THREE.SphereGeometry(8, 32, 32);
-        // let material = new THREE.MeshBasicMaterial({ color: 0x9bffaf }); // 0xf2ce2e 
-        // let sphere = new THREE.Mesh(geometry, material);
-        // sphere.position.z = -15;
-        // sphere.position.y = -2.5;
-        // sphere.position.x = -0.25;
-        // scene.add(sphere);
-        
         console.log("I run");
 
     }
@@ -306,7 +482,7 @@
             }
       }
 
-    function update() {
+    function animate() {
 
         if (mixer) {
             mixer.update(clock.getDelta());
@@ -319,8 +495,8 @@
         }
 
         renderer.render(scene, camera);
-        requestAnimationFrame(update);
+        requestAnimationFrame(animate);
     }
 
-    update();
+    animate();
 })();

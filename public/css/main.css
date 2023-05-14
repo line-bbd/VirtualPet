@@ -3,3 +3,50 @@
     --primaryOrange: #e67e22;
     --background: #34495e;
   }
+
+.wrapper
+{
+  position: relative;
+}
+#canvas
+{
+  height: 100%;
+  width: 100%;
+}
+/* .animationBtns
+{
+  bottom: 10em;
+  left: 100em;
+  position: absolute;
+  width: 10em;
+} */
+
+.animationBtns {
+  position: absolute;
+  bottom: 5em;
+  left: 45em;
+
+
+  -webkit-border-radius: 0.1em;
+  -moz-border-radius: 0.1em;
+  border-radius: 2em;
+  color: #E67E22;
+  font-family: Helvetica;
+  font-size: 2em;
+  padding: 0.5em;
+  background-color: #34495E;
+  border: solid #E67E22 0.1em;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+}
+
+.animationBtns:hover {
+  background: #3498DB;
+  border: solid #E67E22 5px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+  text-decoration: none;
+}

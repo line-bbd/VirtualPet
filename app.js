@@ -10,6 +10,10 @@ app.use("/css", express.static(__dirname + "public/css"));
 app.use("/js", express.static(__dirname + "public/js"));
 app.use("/img", express.static(__dirname + "public/img"));
 app.use("/animationModels", express.static(__dirname + "public/animationModels"));
+app.use("/textures", express.static(__dirname + "public/textures"));
+app.use("/fonts", express.static(__dirname + "public/fonts"));
+
+
 
 // set views
 app.get("/", (req, res) => {
