@@ -4,13 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" href="/public/css/main.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
     <div class="container">
         <section id="top-bar" class="row">
             <h1>Log into your account</h1>
+            <form action="/login" method="POST">
+                <input type="text" id="username" name="username" placeholder="Username">
+                <input type="password" id="password" name="password" placeholder="Password">
+                <button type="submit">Login</button>
         </section>
         <section id="pet-actions" class="row">
             <h2>Navigate to another page:</h2>

@@ -11,6 +11,11 @@
     <div class="container">
         <section id="top-bar" class="row">
             <h1>Register a new account</h1>
+            <form action="/register" method="POST">
+                <input type="text" id="username" name="username" placeholder="Username">
+                <input type="password" id="password" name="password" placeholder="Password">
+                <input type="password" id="passwordVerify" name="passwordVerify" placeholder="Confirm password">
+                <button type="submit">Register</button>
         </section>
         <section id="pet-actions" class="row">
             <h2>Navigate to another page:</h2>
