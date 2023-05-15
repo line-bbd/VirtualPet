@@ -9,4 +9,4 @@
 3. Run `npm start` to start the application
 
 # Links:
-1. Link so figma: https://www.figma.com/file/gBwMusScFyJOwL8DpI5pW2/Virtual-pets-application?type=design&node-id=0-1&t=koQerYSENKbkBNp0-0
+1. Link so figma: https://www.figma.com/file/gBwMusScFyJOwL8DpI5pW2/Virtual-pets-application?type=design&t=LcKrwEH3nQO8RFcG-1
