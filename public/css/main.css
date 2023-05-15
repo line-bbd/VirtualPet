@@ -1,5 +1,9 @@
 :root {
-    --primaryBlue: #3498db;
-    --primaryOrange: #e67e22;
-    --background: #34495e;
-  }
+  --primaryBlue: #3498db;
+  --primaryOrange: #e67e22;
+  --background: #34495e;
+}
+
+body {
+  margin: 0 auto;
+}
