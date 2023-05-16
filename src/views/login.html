@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Register</title>
-    <link rel="stylesheet" href="/public/css/main.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="css/main.css">
     <script src="js/header.js" defer></script>
   </head>
 
@@ -11,17 +12,16 @@
     <header-out-component></header-out-component>
     <div class="container">
         <section id="top-bar" class="row">
-            <h1>Register a new account</h1>
-            <form action="/register" method="POST">
+            <h1>Log into your account</h1>
+            <form action="/login" method="POST">
                 <input type="text" id="username" name="username" placeholder="Username">
                 <input type="password" id="password" name="password" placeholder="Password">
-                <input type="password" id="passwordVerify" name="passwordVerify" placeholder="Confirm password">
-                <button type="submit">Register</button>
+                <button type="submit">Login</button>
         </section>
         <section id="pet-actions" class="row">
             <h2>Navigate to another page:</h2>
             <ul>
-                <li><a href="/index">Login</a></li>
+                <li><a href="/register">Register</a></li>
                 <li><a href="/dashboard">Dashboard</a></li>
                 <li><a href="/adopt">Adopt a pet</a></li>
                 <li><a href="/play">Play</a></li>
