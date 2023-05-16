@@ -162,7 +162,7 @@ class HeaderLoggedIn extends HTMLElement {
           <li><a href="/dashboard">Dashboard</a></li>
           <li><a href="/adopt">Adopt a pet</a></li>
           <li><a href="/play">Play</a></li>
-          <li><a href="/login">Sign Out</a></li>
+          <li><a href="/logout">Sign Out</a></li>
         </ul>
       </nav>
     </header>
@@ -170,5 +170,5 @@ class HeaderLoggedIn extends HTMLElement {
   }
 }
 
-customElements.define('header-out-component', HeaderNotLoggedIn);
-customElements.define('header-in-component', HeaderLoggedIn);
+customElements.define("header-out-component", HeaderNotLoggedIn);
+customElements.define("header-in-component", HeaderLoggedIn);
