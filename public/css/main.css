@@ -8,8 +8,7 @@
     margin: 0;
     padding-bottom: 100px;
     background-color: var(--background); 
-    /* box-sizing: border-box;
-     */
+
     font-family: 'Inter';
     color:white;
   }
@@ -17,9 +16,6 @@
   .con1{
     display: grid;
     grid-template-columns: 1fr;
-  
-    /* display: flex; */
-    /* align-items: center; */
   }
 
   @media (min-width:1000px){
@@ -41,19 +37,10 @@
     width: 75%;
     height: 100%;
 
-    /* background-color: var(--primaryBlue); */
     background-color: rgba(52, 152, 219,0.5);
-    /* opacity: 0.5; */
+
     margin: 0 auto;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    /* display: inline-block;
-margin: 0 auto;
-
-   padding-bottom: 100px;
-border:3px solid;
-
-display: block;
-width:570px; */
   }
 
   h1{
