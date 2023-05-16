@@ -41,9 +41,6 @@ app.use((req, res, next) => {
 
 // set views
 app.get(Pages.LOGIN.url, (req, res) => {
-  if (auth.isAuthenticated()) {
-    logout();
-  }
   navigator.navigate(res, "LOGIN");
   res.sendFile(__dirname + navigator.destination.dir);
 });
@@ -56,19 +53,15 @@ app.post(Pages.LOGIN.url, async (req, res) => {
     if (validLogin(username, password, users).valid) {
       auth.login(username);
       navigator.setAuth(auth);
+      navigator.navigate(res, "DASHBOARD");
+      res.redirect(navigator.destination.url);
     }
-
-    navigator.navigate(res, "DASHBOARD");
-    res.redirect(navigator.destination.url);
   } catch {
     console.log("Error logging in!");
   }
 });
 
 app.get(Pages.REGISTER.url, (req, res) => {
-  if (auth.isAuthenticated()) {
-    logout();
-  }
   navigator.navigate(res, "REGISTER");
   res.sendFile(__dirname + navigator.destination.dir);
 });
@@ -88,19 +81,41 @@ app.post(Pages.REGISTER.url, async (req, res) => {
 });
 
 app.get(Pages.DASHBOARD.url, (req, res) => {
+  console.log("DASHBOARD");
+  console.log(auth);
   navigator.navigate(res, "DASHBOARD");
-  res.sendFile(__dirname + navigator.destination.dir);
+
+  if (navigator.destination === Pages.LOGIN) {
+    res.redirect(navigator.destination.url);
+  } else {
+    res.sendFile(__dirname + navigator.destination.dir);
+  }
 });
 
 app.get(Pages.ADOPT.url, (req, res) => {
+  console.log("ADOPT");
+  console.log(auth);
   navigator.navigate(res, "ADOPT");
-  res.sendFile(__dirname + navigator.destination.dir);
+  if (navigator.destination === Pages.LOGIN) {
+    res.redirect(navigator.destination.url);
+  } else {
+    res.sendFile(__dirname + navigator.destination.dir);
+  }
 });
 
 app.get(Pages.PLAY.url, (req, res) => {
-  navigator.navigate(res, "PLAY");
-  res.sendFile(__dirname + navigator.destination.dir);
+  console.log("PLAY");
+  console.log(auth);
 
+  navigator.navigate(res, "PLAY");
+  if (navigator.destination === Pages.LOGIN) {
+    res.redirect(navigator.destination.url);
+  } else {
+    res.sendFile(__dirname + navigator.destination.dir);
+  }
+});
+
+app.post(Pages.PLAY.url, (req, res) => {
   // feed endpoint
   const { feed } = req.query;
   if (feed === "true") {
@@ -158,8 +173,14 @@ app.get(Pages.PLAY.url, (req, res) => {
   }
 });
 
-app.get("/logout", () => {
-  logout();
+app.get("/logout", (req, res) => {
+  auth.logout();
+  navigator.setAuth(auth);
+  res.redirect(Pages.LOGIN.url);
+});
+
+app.get("/getPetStats", (req, res) => {
+  res.json(pet);
 });
 
 // redirect user to base url if they try to access a route that doesn't exist
@@ -175,8 +196,3 @@ app.use(Pages.LOGIN.url, router);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-const logout = () => {
-  auth.logout();
-  navigator.setAuth(auth);
-};
