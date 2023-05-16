@@ -5,13 +5,13 @@
       model,                              
       neck,                               
       head,
-      torso,                              
-      possibleAnims,                      
+      torso,                                                
       mixer,                              
       idle,
       click_anim,                               
       clock = new THREE.Clock(),
-      loader,         
+      loader,
+      fileAnimations,
       currentlyAnimating = false,         
       raycaster = new THREE.Raycaster();
 
@@ -26,7 +26,7 @@
     function onModelLoad(gltf)
     {
         model = gltf.scene;
-        let fileAnimations = gltf.animations;
+        fileAnimations = gltf.animations;
 
         model.traverse(o => {
             if (o.isMesh) {
@@ -209,61 +209,88 @@
         );
     }
 // TODO Use the css file for the colours
-    function makeButton(radiusX,radiusY,x,y,z,borderColor,color,words)
-    {
-        let path = new THREE.Shape();
-        path.absellipse(0,0,radiusX+0.2,radiusY+0.2,0, Math.PI*2, false,0);
-        let geometry = new THREE.ShapeBufferGeometry( path );
-        let material = new THREE.MeshBasicMaterial( { color: borderColor} );
-        let border = new THREE.Mesh( geometry, material );
-        border.position.set(x,y,z);
-        border.renderOrder = 997;
-        scene.add(border)
-        border.material.depthTest = false;
-        border.material.depthWrite = false;
-        border.onBeforeRender = function (renderer) { renderer.clearDepth(); };
+    // function makeButton(radiusX,radiusY,x,y,z,borderColor,color,words)
+    // {
+    //     let path = new THREE.Shape();
+    //     path.absellipse(0,0,radiusX+0.2,radiusY+0.2,0, Math.PI*2, false,0);
+    //     let geometry = new THREE.ShapeBufferGeometry( path );
+    //     let material = new THREE.MeshBasicMaterial( { color: borderColor} );
+    //     let border = new THREE.Mesh( geometry, material );
+    //     border.position.set(x,y,z);
+    //     border.renderOrder = 997;
+    //     scene.add(border)
+    //     border.material.depthTest = false;
+    //     border.material.depthWrite = false;
+    //     border.onBeforeRender = function (renderer) { renderer.clearDepth(); };
 
 
-        path = new THREE.Shape();
-        path.absellipse(0,0,radiusX,radiusY,0, Math.PI*2, false,0);
-        geometry = new THREE.ShapeBufferGeometry( path );
-        material = new THREE.MeshBasicMaterial( { color: color} );
-        let button = new THREE.Mesh( geometry, material );
-        button.position.set(x,y,z);
+    //     path = new THREE.Shape();
+    //     path.absellipse(0,0,radiusX,radiusY,0, Math.PI*2, false,0);
+    //     geometry = new THREE.ShapeBufferGeometry( path );
+    //     material = new THREE.MeshBasicMaterial( { color: color} );
+    //     let button = new THREE.Mesh( geometry, material );
+    //     button.position.set(x,y,z);
 
-        button.renderOrder = 998;
-        button.material.depthTest = false;
-        button.material.depthWrite = false;
-        button.onBeforeRender = function (renderer) { renderer.clearDepth(); };
-        scene.add(button);
+    //     button.renderOrder = 998;
+    //     button.material.depthTest = false;
+    //     button.material.depthWrite = false;
+    //     button.onBeforeRender = function (renderer) { renderer.clearDepth(); };
+    //     scene.add(button);
 
-        const loader = new THREE.FontLoader();
-        loader.load( 'fonts/helvetiker_bold.typeface.json', function ( font ) {
+    //     const loader = new THREE.FontLoader();
+    //     loader.load( 'fonts/helvetiker_bold.typeface.json', function ( font ) {
 
-            const textGeo = new THREE.TextGeometry( "Feed", {
+    //         const textGeo = new THREE.TextGeometry( "Feed", {
         
-                font: font,
-                size: 5,
-                height: 1,
+    //             font: font,
+    //             size: 5,
+    //             height: 1,
         
-            } );
+    //         } );
         
-            const textMaterial = new THREE.MeshPhongMaterial( { color: color } );
+    //         const textMaterial = new THREE.MeshPhongMaterial( { color: color } );
         
-            const mesh = new THREE.Mesh( textGeo, textMaterial );
-            mesh.position.set( 30, -17, -20 );
-            // mesh.rotation.y = -0.1 * Math.PI;
-            mesh.renderOrder = 999;
+    //         const mesh = new THREE.Mesh( textGeo, textMaterial );
+    //         mesh.position.set( 30, -17, -20 );
+    //         // mesh.rotation.y = -0.1 * Math.PI;
+    //         mesh.renderOrder = 999;
 
 
-            scene.add( mesh );
-        });
-        return button;
-    }
+    //         scene.add( mesh );
+    //     });
+    //     return button;
+    // }
 
     function loadButtons()
     {
-        
+        feedBtn = document.getElementById("feedBtn");
+        feedBtn.addEventListener("click", function() {
+
+            let anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Eating'));
+            playModifierAnimation(idle, 0.25, anim, 0.25);
+        });
+//TODO: do a walk animation
+//TODO: Do something for vet and cleaning
+        walkBtn = document.getElementById("walkBtn");
+        walkBtn.addEventListener("click", function() {
+
+            let anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Walk'));
+            playModifierAnimation(idle, 0.05, anim, 0.05);
+        });
+
+        cleanBtn = document.getElementById("cleanBtn");
+        cleanBtn.addEventListener("click", function() {
+
+            let anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Idle_2_HeadLow'));
+            playModifierAnimation(idle, 0.05, anim, 0.05);
+        });
+
+        vetBtn = document.getElementById("vetBtn");
+        vetBtn.addEventListener("click", function() {
+
+            let anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Attack'));
+            playModifierAnimation(idle, 0.05, anim, 0.05);
+        });
     }
 
     function init() {

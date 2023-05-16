@@ -15,14 +15,40 @@
 <canvas id="canvas"></canvas>
 
 </div>
-<button class="animationBtns">Feed Me</button>
-<button class="animationBtns">Walk Me</button>
-<button class="animationBtns">Clean Me</button>
+<img src="img/arrowLeftBlack.png" alt="BACK" class="arrows">
+<label class="animationLbls" id="healthLbl">
+    <img src="img/heart.gif" alt="Health" class="imgIcons">
+    100
+</label>
 
+<label class="animationLbls" id="foodLbl">
+    <img src="img/bone.png" alt="Food" class="imgIcons">
+    99
+</label>
+
+<label class="animationLbls" id="attentionLbl">
+    <img src="img/ball.png" alt="Bored" class="imgIcons">
+    99
+</label>
+
+<label class="animationLbls" id="sickLbl">
+    <img src="img/medicine.png" alt="Sick" class="imgIcons">
+    100
+</label>
+
+<label class="animationLbls" id="cleanLbl">
+    <img src="img/brush.png" alt="Clean" class="imgIcons">
+    100
+</label>
+
+<button class="animationBtns" id="feedBtn">Feed</button>
+<button class="animationBtns" id="walkBtn">Walk</button>
+<button class="animationBtns" id="cleanBtn">Clean</button>
+<button class="animationBtns" id="vetBtn">Vet</button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/108/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/mrdoob/Three.js@r92/examples/js/loaders/GLTFLoader.js"></script>
-<script src="js/renderModel.js"></script>
+<script src="js/renderScreen.js"></script>
 
 </body>
 </html>
