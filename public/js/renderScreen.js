@@ -263,30 +263,32 @@
 
     function loadButtons()
     {
-        feedBtn = document.getElementById("feedBtn");
+        let feedBtn = document.getElementById("feedBtn");
         feedBtn.addEventListener("click", function() {
 
             let anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Eating'));
             playModifierAnimation(idle, 0.25, anim, 0.25);
         });
+
+
 //TODO: do a walk animation
 //TODO: Do something for vet and cleaning
-        walkBtn = document.getElementById("walkBtn");
+        let walkBtn = document.getElementById("walkBtn");
         walkBtn.addEventListener("click", function() {
 
             let anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Walk'));
             playModifierAnimation(idle, 0.05, anim, 0.05);
         });
 
-        cleanBtn = document.getElementById("cleanBtn");
+        let cleanBtn = document.getElementById("cleanBtn");
         cleanBtn.addEventListener("click", function() {
 
             let anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Idle_2_HeadLow'));
             playModifierAnimation(idle, 0.05, anim, 0.05);
         });
 
-        vetBtn = document.getElementById("vetBtn");
-        vetBtn.addEventListener("click", function() {
+        let healBtn = document.getElementById("healBtn");
+        healBtn.addEventListener("click", function() {
 
             let anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Attack'));
             playModifierAnimation(idle, 0.05, anim, 0.05);
@@ -307,13 +309,11 @@
         camera.position.x = 0;
         camera.position.y = -3;
 
-        const canvas = document.querySelector('#canvas');
-
+        const canvas = document.getElementById("canvas");
         renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
         renderer.shadowMap.enabled = true;
         renderer.setPixelRatio(window.devicePixelRatio);
         document.body.appendChild(renderer.domElement);
-
         loader = new THREE.GLTFLoader();
 
         loader.load(
@@ -328,7 +328,7 @@
                 console.error(error);
             }
         );
-//TODO: use the other functions to make this neater
+    //TODO: use the other functions to make this neater
 
         loader.load(
             dogBowlPath,
@@ -337,8 +337,8 @@
                 model = gltf.scene;
                 model.traverse(o => {
                     if (o.isMesh) {
-                      o.castShadow = true;
-                      o.receiveShadow = true;
+                        o.castShadow = true;
+                        o.receiveShadow = true;
                     }
                 });
 
@@ -381,6 +381,7 @@
         scene.add(dirLight);
 
         console.log("I run");
+
 
     }
 
@@ -448,14 +449,14 @@
 
         }
 
-      document.addEventListener('mousemove', function(e) {
-        let mousecoords = getMousePos(e);
-
-        if (neck && torso && head) {
-            moveJoint(mousecoords, neck, 40);
-            moveJoint(mousecoords, torso, 40);
-            moveJoint(mousecoords, head, 40);
-        }
+        document.addEventListener('mousemove', function(e) {
+            let mousecoords = getMousePos(e);
+    
+            if (neck && torso && head) {
+                moveJoint(mousecoords, neck, 40);
+                moveJoint(mousecoords, torso, 40);
+                moveJoint(mousecoords, head, 40);
+            }
         });
 
         function playModifierAnimation(from, fSpeed, to, tSpeed) {
@@ -526,4 +527,5 @@
     }
 
     animate();
+
 })();

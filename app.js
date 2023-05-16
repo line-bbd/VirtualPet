@@ -20,18 +20,10 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/src/views/index.html");
 });
 
-app.get("/viewPet", (req, res) => {
-  res.sendFile(__dirname + "/src/views/animation.html");
-});
-
 // set routes
 const router = require("./src/routes/index");
 
 app.use("/", router);
-
-// const routerPetAnim = require("./src/routes/pet-animation");
-// app.use("/viewPet", routerPetAnim);
-
 
 // handle different requests
 app.get("/feed", (req, res) => {
