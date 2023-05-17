@@ -5,6 +5,14 @@ const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 
+const mysql = require('mysql')
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'testUser',
+  password: 'Password@123',
+  database: 'VirtualPetDB'
+})
+
 const app = express();
 const port = 3000;
 const auth = new Auth();
@@ -179,8 +187,21 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-app.get("/getPetStats", (req, res) => {
-  res.json(pet);
+app.get("/getPetStats/:pet_id", (req, res) => {
+  connection.connect();
+  let query = 'SELECT * From Pet_stats WHERE pet_id =?';
+  query = mysql.format(query,req.params.pet_id);
+  console.log(query);
+
+  connection.query(query, (err, rows, fields) => {
+    if (err) throw err
+
+    res.json(rows[0]);
+    
+  })
+
+  connection.end();
+  // res.json(pet);
 });
 
 // redirect user to base url if they try to access a route that doesn't exist
