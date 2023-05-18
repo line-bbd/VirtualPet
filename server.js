@@ -195,9 +195,7 @@ app.get("/getPetStats/:pet_id", (req, res) => {
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
-  console.log("Params"+req.params.seenExtPetId)
-  let results = await petfinderAPI.getDog(req.params.seenExtPetId,'20');
-  console.log(results);
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId,1);
 
   res.json(results);
 

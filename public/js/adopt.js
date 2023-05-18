@@ -1,4 +1,5 @@
-const seenExtPetId = [123,456];
+const seenExtPetId = [-1];
+let currPet;
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {
@@ -6,7 +7,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!response.ok) {
         throw new Error("Failed to fetch pet stats");
       }
-      const petStats = await response.json();
+      currPet = await response.json();
+      console.log(currPet);
       // Update the DOM with the pet stats
     //   updatePetStats(petStats);
     } catch (error) {
@@ -16,5 +18,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function refreshPet()
 {
-
+    seenExtPetId.push(currPet.id);
 }

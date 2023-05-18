@@ -21,6 +21,7 @@ class petfinderAPI{
 
   async getDog(seenExtPetId,page)
   {
+
     let allDogs,dogsInDB,foundDogs,retDog;
     dogsInDB = [];//TODO: Get all external ids of dogs in our db
 
