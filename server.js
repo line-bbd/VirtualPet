@@ -3,6 +3,7 @@ const path = require("path");
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
+const extAPI = require('./public/js/petfinderAPI');
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 
 const mysql = require('mysql')
@@ -17,6 +18,7 @@ const app = express();
 const port = 3000;
 const auth = new Auth();
 const navigator = new Navigator();
+const petfinderAPI = new extAPI();
 
 // TODO: just temporary. Implement to use selected pet later.
 const pet = new Pet("Fluffy");
@@ -194,6 +196,18 @@ app.get("/getPetStats/:pet_id", (req, res) => {
   // res.json(pet);
 });
 
+app.get("/getAllDogs", async (req, res) => {
+  let results = await petfinderAPI.getDogs();
+  res.json(results);
+  console.log(results);
+
+  // petfinderAPI.getDogs().then(x => {
+  //   console.log(x);
+  //   res.json(x);
+  // });
+    
+
+});
 // redirect user to base url if they try to access a route that doesn't exist
 app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
