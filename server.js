@@ -1,14 +1,18 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
+require("dotenv").config();
 const path = require("path");
+const { Pool } = require("pg");
+const bcrypt = require("bcrypt");
+const express = require("express");
+
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
-const { Pool } = require("pg");
 
-// Connection details for the PostgreSQL server
-require("dotenv").config();
+const app = express();
+const port = 3000;
+const auth = new Auth();
+const navigator = new Navigator();
 const connectionConfig = {
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -18,42 +22,17 @@ const connectionConfig = {
   ssl: true,
 };
 
-// create a new pool
-const pool = new Pool(connectionConfig);
-
-// SQL query to select all records from the users table
-const selectUsersQuery = "SELECT * FROM users;";
-
-// connect to the existing PostgreSQL server
-pool.connect((err, client, release) => {
-  if (err) {
-    console.error("Error connecting to the PostgreSQL server:", err);
-    return;
-  }
-
-  // execute the SELECT query
-  client.query(selectUsersQuery, (err, result) => {
-    release(); // release the client back to the pool
-
-    if (err) {
-      console.error("Error retrieving users:", err);
-      return;
-    }
-
-    const users = result.rows;
-    console.log("Users:", users);
-  });
-});
-
-const app = express();
-const port = 3000;
-const auth = new Auth();
-const navigator = new Navigator();
-
 // TODO: just temporary. Implement to use selected pet later.
 const pet = new Pet("Fluffy");
 
-// TODO: add db connection
+//////////////////////////////////////////////////////////
+////////////////Example of query////////////////////////
+const selectUsersQuery = "SELECT * FROM users;";
+
+// execute the query
+const data = executeQuery(selectUsersQuery);
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 
 // TODO: get this from db later
 const users = [
@@ -230,19 +209,11 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/getPetStats/:pet_id", (req, res) => {
-  connection.connect();
-  let query = "SELECT * From Pet_stats WHERE pet_id =?";
-  query = mysql.format(query, req.params.pet_id);
-  console.log(query);
+  const pet_id = req.params.pet_id;
+  let petQuery = `SELECT * FROM Pet_stats WHERE pet_id = ${pet_id}`;
+  console.log(petQuery);
 
-  connection.query(query, (err, rows, fields) => {
-    if (err) throw err;
-
-    res.json(rows[0]);
-  });
-
-  connection.end();
-  // res.json(pet);
+  executeQuery(petQuery);
 });
 
 // redirect user to base url if they try to access a route that doesn't exist
@@ -258,3 +229,28 @@ app.use(Pages.LOGIN.url, router);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+function executeQuery(query) {
+  const pool = new Pool(connectionConfig);
+  // connect to the existing PostgreSQL server
+  pool.connect((err, client, release) => {
+    if (err) {
+      console.error("Error connecting to the PostgreSQL server:", err);
+      return;
+    }
+
+    // execute the SELECT query
+    client.query(query, (err, result) => {
+      release(); // release the client back to the pool
+
+      if (err) {
+        console.error("Error retrieving data:", err);
+        return;
+      }
+
+      const data = result.rows;
+      console.log("Data:", data);
+      return data;
+    });
+  });
+}
