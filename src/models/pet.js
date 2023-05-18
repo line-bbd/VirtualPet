@@ -1,12 +1,28 @@
 class Pet {
   constructor(name) {
+    this.type = "Generic Pet";
     this.name = name;
     this.health = 100;
     this.happiness = 100;
     this.fed = 100;
     this.hygiene = 100;
     this.energy = 100;
-    this.message = "You have a new pet!";
+  }
+
+  setPetName(name) {
+    this.name = name;
+  }
+
+  setPetType(type) {
+    this.type = type;
+  }
+
+  setPetStats(health, happiness, fed, hygiene, energy) {
+    this.health = health;
+    this.happiness = happiness;
+    this.fed = fed;
+    this.hygiene = hygiene;
+    this.energy = energy;
   }
 
   feed() {

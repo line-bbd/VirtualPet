@@ -3,16 +3,16 @@ const path = require("path");
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const express = require("express");
-
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 
 const app = express();
-const port = 3000;
+const port = 3000; // TODO: Remove this later
 const auth = new Auth();
 const navigator = new Navigator();
+
 const connectionConfig = {
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -22,29 +22,74 @@ const connectionConfig = {
   ssl: true,
 };
 
-// TODO: just temporary. Implement to use selected pet later.
-const pet = new Pet("Fluffy");
+const pet = new Pet();
 
-//////////////////////////////////////////////////////////
-////////////////Example of query////////////////////////
-const selectUsersQuery = "SELECT * FROM users;";
+// section for db query methods
+const getUsers = async () => {
+  const usersQuery = "SELECT * FROM users;";
+  return await executeQuery(usersQuery);
+};
 
-// execute the query
-const data = executeQuery(selectUsersQuery);
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
+const addUser = async (username, password) => {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const addUserQuery = `INSERT INTO users (username, password) VALUES ('${username}', '${hashedPassword}');`;
+  await executeQuery(addUserQuery);
+};
 
-// TODO: get this from db later
-const users = [
-  {
-    username: "test",
-    password: "test",
-  },
-  {
-    username: "user1",
-    password: "$2b$10$xxIQtfWunC4JoF/tqebCaOnWO4Xlur.pH4NSQhHKvKt2GuGVd.gZC",
-  },
-];
+const selectPet = async (pet_id) => {
+  const selectPetQuery = `SELECT * FROM Pets WHERE pet_id = ${pet_id};`;
+  const data = JSON.parse(
+    JSON.stringify((await executeQuery(selectPetQuery))[0])
+  );
+  console.log(data);
+  pet.setPetName(data.name);
+  pet.setPetType(data.type);
+};
+
+const getPetStats = async (pet_id) => {
+  const petQuery = `SELECT * FROM Pet_stats WHERE pet_id = ${pet_id};`;
+  const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
+  return data;
+};
+
+// section ends here
+
+const setPetStats = async (data) => {
+  pet.setPetStats(
+    data.health,
+    data.happiness,
+    data.fed,
+    data.hygiene,
+    data.energy
+  );
+
+  console.log(pet);
+};
+
+const executeQuery = async (query) => {
+  const pool = new Pool(connectionConfig);
+  let client, release;
+
+  try {
+    client = await pool.connect();
+    const result = await client.query(query);
+    const data = result.rows;
+    // console.log(data);
+    return data;
+  } catch (err) {
+    console.error("Error retrieving data:", err);
+    throw err;
+  } finally {
+    if (client) {
+      release = client.release();
+    }
+    if (release) {
+      release;
+    }
+  }
+};
+
+// api section starts here
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
@@ -68,8 +113,10 @@ app.get(Pages.LOGIN.url, (req, res) => {
 
 app.post(Pages.LOGIN.url, async (req, res) => {
   try {
-    const username = await req.body.username;
-    const password = await req.body.password;
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const users = await getUsers();
 
     const login = validLogin(username, password, users);
 
@@ -83,8 +130,9 @@ app.post(Pages.LOGIN.url, async (req, res) => {
       res.json(login);
       console.log(login.message);
     }
-  } catch {
-    console.log("Error logging in!");
+  } catch (err) {
+    console.log("Error logging in:", err);
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -99,6 +147,8 @@ app.post(Pages.REGISTER.url, async (req, res) => {
     const password = await req.body.password;
     const confirmPassword = await req.body.verify;
 
+    const users = await getUsers();
+
     const registration = validRegistration(
       username,
       password,
@@ -107,9 +157,7 @@ app.post(Pages.REGISTER.url, async (req, res) => {
     );
 
     if (registration.valid) {
-      // TODO: store this in db later
-      const hashedPassword = await bcrypt.hash(password, 10);
-      console.log("adding user");
+      await addUser(username, password);
       res.redirect(Pages.LOGIN.url);
     } else {
       // response containing error message
@@ -208,12 +256,17 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-app.get("/getPetStats/:pet_id", (req, res) => {
+app.get("/getPetStats/:pet_id", async (req, res) => {
   const pet_id = req.params.pet_id;
-  let petQuery = `SELECT * FROM Pet_stats WHERE pet_id = ${pet_id}`;
-  console.log(petQuery);
+  getPetStats(pet_id);
+});
 
-  executeQuery(petQuery);
+// api query to 'select' one of the existing user's pets
+app.post("/selectPet/:pet_id", async (req, res) => {
+  const pet_id = req.params.pet_id;
+  selectPet(pet_id);
+  const petStats = await getPetStats(pet_id);
+  await setPetStats(petStats);
 });
 
 // redirect user to base url if they try to access a route that doesn't exist
@@ -221,36 +274,6 @@ app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-// set routes
-const router = require("./src/routes/index");
-
-app.use(Pages.LOGIN.url, router);
-
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-function executeQuery(query) {
-  const pool = new Pool(connectionConfig);
-  // connect to the existing PostgreSQL server
-  pool.connect((err, client, release) => {
-    if (err) {
-      console.error("Error connecting to the PostgreSQL server:", err);
-      return;
-    }
-
-    // execute the SELECT query
-    client.query(query, (err, result) => {
-      release(); // release the client back to the pool
-
-      if (err) {
-        console.error("Error retrieving data:", err);
-        return;
-      }
-
-      const data = result.rows;
-      console.log("Data:", data);
-      return data;
-    });
-  });
-}
