@@ -1,5 +1,4 @@
 const express = require("express");
-const { Pool } = require("pg");
 const path = require("path");
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
@@ -14,14 +13,7 @@ const navigator = new Navigator();
 // TODO: just temporary. Implement to use selected pet later.
 const pet = new Pet("Fluffy");
 
-// create a connection pool to manage connections
-const pool = new Pool({
-  user: "your_username",
-  host: "your_host",
-  database: "your_database",
-  password: "your_password",
-  port: "your_port",
-});
+// TODO: add db connection
 
 // TODO: get this from db later
 const users = [
