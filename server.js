@@ -5,13 +5,7 @@ const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 
-const mysql = require('mysql')
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'testUser',
-  password: 'Password@123',
-  database: 'VirtualPetDB'
-})
+
 
 const app = express();
 const port = 3000;
@@ -48,6 +42,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+
 
 // set views
 app.get(Pages.LOGIN.url, (req, res) => {
@@ -134,7 +129,6 @@ app.post(Pages.VIEWPET.url, (req, res) => {
   }
 });
 
-
 app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
   pet.giveAttention();
   console.log(pet);
@@ -177,6 +171,35 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
+
+
+//PET DB QUERIES: Waiting for hosted database
+app.get("/addPet", (req, res) => {
+  const externalID = req.params.externalID;
+  const userID = req.params.id;
+  const name = req.params.name;
+  const dateCreated = req.params.dateCreated;
+  const type = req.params.type;
+  
+ 
+  const insertStatement =
+    "INSERT INTO Pets (externalID, user_id, name, date_created, type) VALUES (?,?,?,?,?)";
+});
+
+app.get("/getPet/:petID", (req, res) => {
+  const petID = req.params.petID;
+  
+  const selectStatement =
+    "SELECT * FROM Pets WHERE pet_id = ?";
+});
+
+app.get("/getUserPets/:userId", (req, res) => {
+  const userId = req.params.userId;
+  
+  const selectStatement =
+    "SELECT * FROM Pets WHERE user_id= ?";
+});
+
 app.get("/getPetStats/:pet_id", (req, res) => {
   connection.connect();
   let query = 'SELECT * From Pet_stats WHERE pet_id =?';
@@ -194,10 +217,24 @@ app.get("/getPetStats/:pet_id", (req, res) => {
   // res.json(pet);
 });
 
+app.get("/getExternalID", (req, res) => {
+  const query = 'SELECT external_id From Pets';
+
+  // res.json(pet);
+});
+
+app.get("/updatePetStats/:pet_id", (req, res) => {
+  const petID = req.params.petID;
+  
+ const updateStatement = "UPDATE users SET Name = ?, Surname = ?, Email = ? WHERE id = ?"
+});
+
+
 // redirect user to base url if they try to access a route that doesn't exist
 app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
+
 
 // set routes
 const router = require("./src/routes/index");
