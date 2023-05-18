@@ -8,8 +8,8 @@ router.get("/", async (req, res) => {
   res.render("index");
 });
 
-router.get("/play", async (req, res) => {
-  res.render("play");
+router.get("/viewPet", async (req, res) => {
+  res.render("viewPet");
 });
 
 router.get("/register", async (req, res) => {

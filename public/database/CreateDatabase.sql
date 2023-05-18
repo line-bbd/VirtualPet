@@ -14,6 +14,7 @@ GO
 
 CREATE TABLE [Pet] (
   [pet_id] int PRIMARY KEY IDENTITY(1, 1),
+  [external_pet_id] int UNIQUE,
   [user_id] int,
   [name] nvarchar(255),
   [date_created] datetime,
