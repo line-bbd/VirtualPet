@@ -25,10 +25,10 @@ const Pages = {
     name: "Adopt",
     protected: true,
   },
-  PLAY: {
-    url: "/play",
-    dir: "/src/views/play.html",
-    name: "Play",
+  VIEWPET: {
+    url: "/viewPet",
+    dir: "/src/views/viewPet.html",
+    name: "ViewPet",
     protected: true,
   },
 };

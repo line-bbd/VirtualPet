@@ -1,31 +1,19 @@
+const mysql = require('mysql')
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'testUser',
+  password: 'Password@123',
+  database: 'VirtualPetDB'
+})
 
-const sql = require("mssql");
+connection.connect()
+connection.query('SELECT * From Users', (err, rows, fields) => {
+  if (err) throw err
 
-const config = {
-  server: "localhost",
-  database:"VirtualPetDB",
-  user:"testUser",
-  password:"",
-  trustServerCertificate:true
-};
+  for (let row of rows){
+    console.log(row);
+  }
+  
+})
 
-// sql.on("error",err=>
-// console.log(err)
-// )
-
-sql.connect(config, function (err) {
-    if (err) console.log(err);
-
-    // create Request object
-    var request = new sql.Request();
-       
-    // query to the database and get the records
-    request.query('select * from Pet', function (err, recordset) {
-        
-        if (err) console.log(err)
-
-        // send records as a response
-        console.log(recordset);
-        
-    });
-});
+connection.end()

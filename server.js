@@ -6,6 +6,14 @@ const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 
+const mysql = require('mysql')
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'testUser',
+  password: 'Password@123',
+  database: 'VirtualPetDB'
+})
+
 const app = express();
 const port = 3000;
 const auth = new Auth();
@@ -127,11 +135,11 @@ app.get(Pages.ADOPT.url, (req, res) => {
   }
 });
 
-app.get(Pages.PLAY.url, (req, res) => {
+app.get(Pages.VIEWPET.url, (req, res) => {
   console.log("PLAY");
   console.log(auth);
 
-  navigator.navigate(res, "PLAY");
+  navigator.navigate(res, "VIEWPET");
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
   } else {
@@ -139,43 +147,47 @@ app.get(Pages.PLAY.url, (req, res) => {
   }
 });
 
-app.post(Pages.PLAY.url + "/feed", (req, res) => {
-  pet.feed();
-  console.log(pet);
-  res.json(pet);
+app.post(Pages.VIEWPET.url, (req, res) => {
+  // feed endpoint
+  const { feed } = req.query;
+  if (feed === "true") {
+    pet.feed();
+    console.log(pet);
+  }
 });
 
-app.post(Pages.PLAY.url + "/attention", (req, res) => {
+
+app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
   pet.giveAttention();
   console.log(pet);
   res.json(pet);
 });
 
-app.post(Pages.PLAY.url + "/medicine", (req, res) => {
+app.post(Pages.VIEWPET.url + "/medicine", (req, res) => {
   pet.giveMedicine();
   console.log(pet);
   res.json(pet);
 });
 
-app.post(Pages.PLAY.url + "/bath", (req, res) => {
+app.post(Pages.VIEWPET.url + "/bath", (req, res) => {
   pet.giveBath();
   console.log(pet);
   res.json(pet);
 });
 
-app.post(Pages.PLAY.url + "/treat", (req, res) => {
+app.post(Pages.VIEWPET.url + "/treat", (req, res) => {
   pet.giveTreat();
   console.log(pet);
   res.json(pet);
 });
 
-app.post(Pages.PLAY.url + "/toy", (req, res) => {
+app.post(Pages.VIEWPET.url + "/toy", (req, res) => {
   pet.giveToy();
   console.log(pet);
   res.json(pet);
 });
 
-app.post(Pages.PLAY.url + "/sleep", (req, res) => {
+app.post(Pages.VIEWPET.url + "/sleep", (req, res) => {
   pet.sleep();
   console.log(pet);
   res.json(pet);
@@ -187,8 +199,21 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-app.get("/getPetStats", (req, res) => {
-  res.json(pet);
+app.get("/getPetStats/:pet_id", (req, res) => {
+  connection.connect();
+  let query = 'SELECT * From Pet_stats WHERE pet_id =?';
+  query = mysql.format(query,req.params.pet_id);
+  console.log(query);
+
+  connection.query(query, (err, rows, fields) => {
+    if (err) throw err
+
+    res.json(rows[0]);
+    
+  })
+
+  connection.end();
+  // res.json(pet);
 });
 
 // redirect user to base url if they try to access a route that doesn't exist
