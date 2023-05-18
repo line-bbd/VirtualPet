@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const path = require("path");
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
@@ -60,11 +61,17 @@ app.post(Pages.LOGIN.url, async (req, res) => {
     const username = await req.body.username;
     const password = await req.body.password;
 
-    if (validLogin(username, password, users).valid) {
+    const login = validLogin(username, password, users);
+
+    if (login.valid) {
       auth.login(username);
       navigator.setAuth(auth);
       navigator.navigate(res, "DASHBOARD");
       res.redirect(navigator.destination.url);
+    } else {
+      // response containing error message
+      res.json(login);
+      console.log(login.message);
     }
   } catch {
     console.log("Error logging in!");
@@ -78,14 +85,29 @@ app.get(Pages.REGISTER.url, (req, res) => {
 
 app.post(Pages.REGISTER.url, async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    // TODO: store this in db later
-    users.push({
-      username: req.body.username,
-      password: hashedPassword,
-    });
-    res.redirect(Pages.LOGIN.url);
+    const username = await req.body.username;
+    const password = await req.body.password;
+    const confirmPassword = await req.body.verify;
+
+    const registration = validRegistration(
+      username,
+      password,
+      confirmPassword,
+      users
+    );
+
+    if (registration.valid) {
+      // TODO: store this in db later
+      const hashedPassword = await bcrypt.hash(password, 10);
+      console.log("adding user");
+      res.redirect(Pages.LOGIN.url);
+    } else {
+      // response containing error message
+      res.json(registration);
+      console.log(registration.message);
+    }
   } catch {
+    console.log("Error registering!");
     res.redirect(Pages.REGISTER.url);
   }
 });
