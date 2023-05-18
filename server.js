@@ -135,6 +135,42 @@ app.post(Pages.VIEWPET.url, (req, res) => {
 });
 
 
+app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
+  pet.giveAttention();
+  console.log(pet);
+  res.json(pet);
+});
+
+app.post(Pages.VIEWPET.url + "/medicine", (req, res) => {
+  pet.giveMedicine();
+  console.log(pet);
+  res.json(pet);
+});
+
+app.post(Pages.VIEWPET.url + "/bath", (req, res) => {
+  pet.giveBath();
+  console.log(pet);
+  res.json(pet);
+});
+
+app.post(Pages.VIEWPET.url + "/treat", (req, res) => {
+  pet.giveTreat();
+  console.log(pet);
+  res.json(pet);
+});
+
+app.post(Pages.VIEWPET.url + "/toy", (req, res) => {
+  pet.giveToy();
+  console.log(pet);
+  res.json(pet);
+});
+
+app.post(Pages.VIEWPET.url + "/sleep", (req, res) => {
+  pet.sleep();
+  console.log(pet);
+  res.json(pet);
+});
+
 app.get("/logout", (req, res) => {
   auth.logout();
   navigator.setAuth(auth);
