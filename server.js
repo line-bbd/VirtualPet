@@ -132,42 +132,8 @@ app.post(Pages.VIEWPET.url, (req, res) => {
     pet.feed();
     console.log(pet);
   }
-
-app.post(Pages.PLAY.url + "/attention", (req, res) => {
-  pet.giveAttention();
-  console.log(pet);
-  res.json(pet);
 });
 
-app.post(Pages.PLAY.url + "/medicine", (req, res) => {
-  pet.giveMedicine();
-  console.log(pet);
-  res.json(pet);
-});
-
-app.post(Pages.PLAY.url + "/bath", (req, res) => {
-  pet.giveBath();
-  console.log(pet);
-  res.json(pet);
-});
-
-app.post(Pages.PLAY.url + "/treat", (req, res) => {
-  pet.giveTreat();
-  console.log(pet);
-  res.json(pet);
-});
-
-app.post(Pages.PLAY.url + "/toy", (req, res) => {
-  pet.giveToy();
-  console.log(pet);
-  res.json(pet);
-});
-
-app.post(Pages.PLAY.url + "/sleep", (req, res) => {
-  pet.sleep();
-  console.log(pet);
-  res.json(pet);
-});
 
 app.get("/logout", (req, res) => {
   auth.logout();
