@@ -7,37 +7,40 @@
     <link rel="stylesheet" href="css/main.css">
 
     <!-- import actions script -->
-    <script src="js/actions.js"></script>
+    <script src="js/header.js" defer></script>
+    <script src="js/play.js" defer></script>
 </head>
 
 <body>
+    <header-in-component></header-in-component>
     <div class="container">
         <section id="top-bar" class="row">
             <h1>Welcome to your virtual pet!</h1>
         </section>
         <section id="pet-view" class="row">
-            <img src="img/Dog1.png" alt="pet">
+            <img src="img/Dog1.png" alt="pet" />
         </section>
         <section id="pet-stats" class="row">
-            <h2>Stats for ___:</h2>
+            <h2>Stats for <span id="name"></span></h2>
             <ul>
-                <li>Hunger:</li>
-                <li>Thirst:</li>
-                <li>Boredom:</li>
-                <li>Tiredness:</li>
-                <li>Age:</li>
+                <li>Health: <span id="health"></span></li>
+                <li>Happiness: <span id="happiness"></span></li>
+                <li>Fed: <span id="fed"></span></li>
+                <li>Hydrated: <span id="hydrated"></span></li>
+                <li>Hygiene: <span id="hygiene"></span></li>
+                <li>Energy: <span id="energy"></span></li>
             </ul>
         </section>
         <section id="pet-actions" class="row">
             <h2>Actions for api testing purposes</h2>
-            <button onclick="feed()">Feed</button>
-            <button onclick="giveWater()">Give water</button>
-            <button onclick="giveAttention()">Pet</button>
-            <button onclick="giveMedicine()">Give medicine</button>
-            <button onclick="bath()">Bath</button>
-            <button onclick="giveTreat()">Give treat</button>
-            <button onclick="giveToy()">Give toy</button>
-            <button onclick="sleep()">Put to bed</button>
+            <button id="btn-feed">Feed</button>
+            <button id="btn-givewater">Give water</button>
+            <button id="btn-giveAttention">Pet</button>
+            <button id="btn-giveMedicine">Give medicine</button>
+            <button id="btn-bath">Bath</button>
+            <button id="btn-giveTreat">Give treat</button>
+            <button id="btn-giveToy">Give toy</button>
+            <button id="btn-sleep">Put to bed</button>
         </section>
         <section id="navigation" class="row">
             <h2>Navigate to another page:</h2>

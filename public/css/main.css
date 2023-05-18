@@ -1,109 +1,134 @@
 :root {
-    --primaryBlue: #3498db;
-    --primaryOrange: #e67e22;
-    --background: #34495e;
-  }
+  --primaryBlue: #3498db;
+  --primaryOrange: #e67e22;
+  --background: #34495e;}
 
-  body{
-    margin: 0;
-    padding-bottom: 100px;
-    background-color: var(--background); 
 
-    font-family: 'Inter';
-    color:white;
-  }
-  
-  .con1{
-    display: grid;
-    grid-template-columns: 1fr;
-  }
+body {
+  margin: 0 !important;
+}
 
-  @media (min-width:1000px){
-    .con1{
-      display: grid;
-      grid-template-columns:1fr 2fr 1fr;
 
-    }
-    .button{
-      position: absolute;
-      bottom: 0;
-      right:0;
-      margin-right: 30px;
+.wrapper
+{
+  position: relative;
+}
+#canvas
+{
+  height: 100%;
+  width: 100%;
+}
 
-    }
-  }
+.arrows{
+  width: 7rem;
+  height: 7rem;
+  position: absolute;
+}
 
-  #adoptForm{
-    width: 75%;
-    height: 100%;
+.animationLbls{
 
-    background-color: rgba(52, 152, 219,0.5);
+    width: 7rem;
+    height: 2.5rem;
+    position: absolute;
 
-    margin: 0 auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
+    font-family: 'Roboto', sans-serif;
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: 0.05rem;
+    font-style: italic;
+    color: #000000;
+    background-color: #837569;
+    border-radius: 2rem;
+    -webkit-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    padding: 1rem 1rem;
+    opacity: 0.7;
+    text-align: left;
 
-  h1{
-    font-size: 27px;
- 
-  }
-
-  label{
-    font-size: 36px;
- 
-    display: inline-block;
-    
-  }
-  
-  .container{
-    text-align: center;
-    position: relative;
-    justify-content: center;
-  }
-
-  .input{
-    padding-top: 20px;
-  display: flex;
-  justify-content:space-around;
-  }
-
-  main{
- 
-  }
-  .input input{
-    display: inline-block;
-  
-    width: 50%;
-    height:35px;
-    border-radius: 5px;
-    border:none;
-
-   
-  }
-  .formButton{
-    /* display: inline;
-    margin: 0;
-     */
-  }
-  .button{
-
-    border-radius: 5px;
-    border:none;
-    height: 64px;
-    width:280px;
-    color:white;
-    background-color: var(--primaryOrange);
-  }
-
-  .image{
-margin:20px 0 0 0;
-display: flex;
-justify-content:flex-end;
 
 }
 
-img{
-  padding-right: 10%;
-  width: 50%;
-  height: 50%;
+#healthLbl{
+  top: 2rem;
+  left: 10rem;
+}
+
+#foodLbl{
+  top: 2rem;
+  left: 20rem;
+}
+
+#attentionLbl{
+  top: 2rem;
+  left: 30rem;
+}
+
+#sickLbl{
+  top: 2rem;
+  left: 40rem;
+}
+
+#cleanLbl{
+  top: 2rem;
+  left: 50rem;
+}
+
+.imgIcons{
+  width: 2rem;
+  height: 2rem;
+}
+
+
+
+.animationBtns {
+  width: 7rem;
+  height: 4rem;
+
+  -webkit-border-radius: 0.1rem;
+  -moz-border-radius: 0.1rem;
+  border-radius: 2rem;
+  color: var(--primaryOrange);
+  font-family: Helvetica;
+  font-size: 2rem;
+  padding: 0.5rem;
+  background-color: var(--background);;
+  border: solid var(--primaryOrange) 0.1rem;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.animationBtns:hover {
+  background: var(--primaryBlue);;
+  border: solid var(--primaryOrange) 5px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+  text-decoration: none;
+}
+
+#feedBtn{
+  position: absolute;
+  bottom: 10rem;
+  right: 15rem;
+}
+
+#walkBtn{
+  position: absolute;
+  bottom: 5rem;
+  right: 15rem;
+}
+
+#cleanBtn{
+  position: absolute;
+  bottom: 5rem;
+  right: 5rem;
+}
+
+#healBtn{
+  position: absolute;
+  bottom: 10rem;
+  right: 5rem;
 }
