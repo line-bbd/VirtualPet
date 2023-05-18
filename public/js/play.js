@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add event listeners to the buttons
   feedButton.addEventListener("click", handleFeedAction);
+  washButton.addEventListener("click", handleWashAction);
   attentionButton.addEventListener("click", handleAttentionAction);
   washButton.addEventListener("click", handleWashAction);
   medicineButton.addEventListener("click", handleMedicineAction);
