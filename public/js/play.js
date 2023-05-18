@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Get the action buttons
   const feedButton = document.getElementById("btn-feed");
   const washButton = document.getElementById("btn-bath");
-  const waterButton = document.getElementById("btn-givewater");
   const attentionButton = document.getElementById("btn-giveAttention");
   const medicineButton = document.getElementById("btn-giveMedicine");
   const treatButton = document.getElementById("btn-giveTreat");
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add event listeners to the buttons
   feedButton.addEventListener("click", handleFeedAction);
   washButton.addEventListener("click", handleWashAction);
-  waterButton.addEventListener("click", handleWaterAction);
   attentionButton.addEventListener("click", handleAttentionAction);
   medicineButton.addEventListener("click", handleMedicineAction);
   treatButton.addEventListener("click", handleTreatAction);
@@ -37,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function handleFeedAction() {
   try {
-    const response = await fetch("/play?feed=true", { method: "POST" });
+    const response = await fetch("/play/feed", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to feed the pet");
     }
@@ -52,7 +50,7 @@ async function handleFeedAction() {
 
 async function handleWashAction() {
   try {
-    const response = await fetch("/play?bath=true", { method: "POST" });
+    const response = await fetch("/play/bath", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to wash the pet");
     }
@@ -65,24 +63,9 @@ async function handleWashAction() {
   }
 }
 
-async function handleWaterAction() {
-  try {
-    const response = await fetch("/play?water=true", { method: "POST" });
-    if (!response.ok) {
-      throw new Error("Failed to give water to the pet");
-    }
-    const updatedPetStats = await response.json();
-
-    // Update the DOM with the updated pet stats
-    updatePetStats(updatedPetStats);
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 async function handleAttentionAction() {
   try {
-    const response = await fetch("/play?attention=true", { method: "POST" });
+    const response = await fetch("/play/attention", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to give attention to the pet");
     }
@@ -97,7 +80,7 @@ async function handleAttentionAction() {
 
 async function handleMedicineAction() {
   try {
-    const response = await fetch("/play?medicine=true", { method: "POST" });
+    const response = await fetch("/play/medicine", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to give medicine to the pet");
     }
@@ -112,7 +95,7 @@ async function handleMedicineAction() {
 
 async function handleTreatAction() {
   try {
-    const response = await fetch("/play?treat=true", { method: "POST" });
+    const response = await fetch("/play/treat", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to give a treat to the pet");
     }
@@ -127,7 +110,7 @@ async function handleTreatAction() {
 
 async function handleToyAction() {
   try {
-    const response = await fetch("/play?toy=true", { method: "POST" });
+    const response = await fetch("/play/toy", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to give a toy to the pet");
     }
@@ -142,7 +125,7 @@ async function handleToyAction() {
 
 async function handleSleepAction() {
   try {
-    const response = await fetch("/play?sleep=true", { method: "POST" });
+    const response = await fetch("/play/sleep", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to put the pet to sleep");
     }
@@ -159,7 +142,6 @@ function updatePetStats(petStats) {
   document.getElementById("name").textContent = petStats.name;
   document.getElementById("health").textContent = petStats.health;
   document.getElementById("fed").textContent = petStats.fed;
-  document.getElementById("hydrated").textContent = petStats.hydrated;
   document.getElementById("happiness").textContent = petStats.happiness;
   document.getElementById("hygiene").textContent = petStats.hygiene;
   document.getElementById("energy").textContent = petStats.energy;

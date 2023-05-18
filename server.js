@@ -1,4 +1,5 @@
 const express = require("express");
+const { Pool } = require("pg");
 const path = require("path");
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
@@ -12,6 +13,15 @@ const navigator = new Navigator();
 
 // TODO: just temporary. Implement to use selected pet later.
 const pet = new Pet("Fluffy");
+
+// create a connection pool to manage connections
+const pool = new Pool({
+  user: "your_username",
+  host: "your_host",
+  database: "your_database",
+  password: "your_password",
+  port: "your_port",
+});
 
 // TODO: get this from db later
 const users = [
@@ -115,62 +125,46 @@ app.get(Pages.PLAY.url, (req, res) => {
   }
 });
 
-app.post(Pages.PLAY.url, (req, res) => {
-  // feed endpoint
-  const { feed } = req.query;
-  if (feed === "true") {
-    pet.feed();
-    console.log(pet);
-  }
+app.post(Pages.PLAY.url + "/feed", (req, res) => {
+  pet.feed();
+  console.log(pet);
+  res.json(pet);
+});
 
-  // give water endpoint
-  const { water } = req.query;
-  if (water === "true") {
-    pet.giveWater();
-    console.log(pet);
-  }
+app.post(Pages.PLAY.url + "/attention", (req, res) => {
+  pet.giveAttention();
+  console.log(pet);
+  res.json(pet);
+});
 
-  // give attention endpoint
-  const { attention } = req.query;
-  if (attention === "true") {
-    pet.giveAttention();
-    console.log(pet);
-  }
+app.post(Pages.PLAY.url + "/medicine", (req, res) => {
+  pet.giveMedicine();
+  console.log(pet);
+  res.json(pet);
+});
 
-  // give medicine endpoint
-  const { medicine } = req.query;
-  if (medicine === "true") {
-    pet.giveMedicine();
-    console.log(pet);
-  }
+app.post(Pages.PLAY.url + "/bath", (req, res) => {
+  pet.giveBath();
+  console.log(pet);
+  res.json(pet);
+});
 
-  // give bath endpoint
-  const { bath } = req.query;
-  if (bath === "true") {
-    pet.giveBath();
-    console.log(pet);
-  }
+app.post(Pages.PLAY.url + "/treat", (req, res) => {
+  pet.giveTreat();
+  console.log(pet);
+  res.json(pet);
+});
 
-  // give treat endpoint
-  const { treat } = req.query;
-  if (treat === "true") {
-    pet.giveTreat();
-    console.log(pet);
-  }
+app.post(Pages.PLAY.url + "/toy", (req, res) => {
+  pet.giveToy();
+  console.log(pet);
+  res.json(pet);
+});
 
-  // give toy endpoint
-  const { toy } = req.query;
-  if (toy === "true") {
-    pet.giveToy();
-    console.log(pet);
-  }
-
-  // put to bed endpoint
-  const { sleep } = req.query;
-  if (sleep === "true") {
-    pet.sleep();
-    console.log(pet);
-  }
+app.post(Pages.PLAY.url + "/sleep", (req, res) => {
+  pet.sleep();
+  console.log(pet);
+  res.json(pet);
 });
 
 app.get("/logout", (req, res) => {
