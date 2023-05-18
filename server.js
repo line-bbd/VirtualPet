@@ -183,8 +183,6 @@ app.get("/getPetStats/:pet_id", (req, res) => {
   connection.connect();
   let query = 'SELECT * From Pet_stats WHERE pet_id =?';
   query = mysql.format(query,req.params.pet_id);
-  console.log(query);
-
   connection.query(query, (err, rows, fields) => {
     if (err) throw err
 
@@ -196,16 +194,12 @@ app.get("/getPetStats/:pet_id", (req, res) => {
   // res.json(pet);
 });
 
-app.get("/getAllDogs", async (req, res) => {
-  let results = await petfinderAPI.getDogs();
-  res.json(results);
+app.get("/getDog/:seenExtPetId", async (req, res) => {
+  console.log("Params"+req.params.seenExtPetId)
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId,'20');
   console.log(results);
 
-  // petfinderAPI.getDogs().then(x => {
-  //   console.log(x);
-  //   res.json(x);
-  // });
-    
+  res.json(results);
 
 });
 // redirect user to base url if they try to access a route that doesn't exist
