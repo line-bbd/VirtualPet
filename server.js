@@ -8,12 +8,13 @@ const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 const { Pool } = require("pg");
 
 // Connection details for the PostgreSQL server
+require("dotenv").config();
 const connectionConfig = {
-  user: "flintlock",
-  host: "dpg-chj16le4dad01aicgihg-a.frankfurt-postgres.render.com",
-  database: "virtualpetdb_a8q9",
-  password: "pCbKiLdpJefgAWrpSDIh3UeWlEJ1fArr",
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
   ssl: true,
 };
 
