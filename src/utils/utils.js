@@ -25,20 +25,26 @@ const Pages = {
     name: "Adopt",
     protected: true,
   },
-  PLAY: {
-    url: "/play",
-    dir: "/src/views/play.html",
-    name: "Play",
+  VIEWPET: {
+    url: "/viewPet",
+    dir: "/src/views/viewPet.html",
+    name: "ViewPet",
     protected: true,
   },
 };
 
-const validRegistration = (username, password, confirmPassword, users) => {
+function validRegistration(username, password, confirmPassword, users) {
   const user = users.find((user) => user.username === username);
   if (user) {
     return {
       valid: false,
       message: "Username already exists",
+    };
+  }
+  if (username.length < 1) {
+    return {
+      valid: false,
+      message: "Username field cannot be empty",
     };
   }
   if (username.length < 3) {
@@ -47,10 +53,10 @@ const validRegistration = (username, password, confirmPassword, users) => {
       message: "Username must be at least 3 characters long",
     };
   }
-  if (password.length < 8) {
+  if (password.length < 1) {
     return {
       valid: false,
-      message: "Password must be at least 8 characters long",
+      message: "Password field cannot be empty",
     };
   }
   if (password !== confirmPassword) {
@@ -63,9 +69,11 @@ const validRegistration = (username, password, confirmPassword, users) => {
     valid: true,
     message: "Registration successful",
   };
-};
+}
 
-const validLogin = (username, password, users) => {
+function validLogin(username, password, users) {
+  console.log("Users from db");
+  console.log(users);
   const user = users.find((user) => user.username === username);
   if (!user) {
     return {
@@ -83,6 +91,6 @@ const validLogin = (username, password, users) => {
     valid: true,
     message: "Login successful",
   };
-};
+}
 
 module.exports = { Pages, validRegistration, validLogin };

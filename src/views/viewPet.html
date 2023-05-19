@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Dog Model</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- The canvas element is used to draw the 3D scene -->
+        <canvas id="canvas"></canvas>
+
+    </div>
+    <img src="img/arrowLeftBlack.png" alt="BACK" class="arrows">
+    <label class="animationLbls" id="healthLbl">
+        <img src="img/heart.gif" alt="Health" class="imgIcons">
+    </label>
+
+    <label class="animationLbls" id="foodLbl">
+        <img src="img/bone.png" alt="Food" class="imgIcons">
+    </label>
+
+    <label class="animationLbls" id="attentionLbl">
+        <img src="img/ball.png" alt="Bored" class="imgIcons">
+    </label>
+
+    <label class="animationLbls" id="sickLbl">
+        <img src="img/medicine.png" alt="Sick" class="imgIcons">
+    </label>
+
+    <label class="animationLbls" id="cleanLbl">
+        <img src="img/brush.png" alt="Clean" class="imgIcons">
+    </label>
+
+    <button class="animationBtns" id="feedBtn">Feed</button>
+    <button class="animationBtns" id="walkBtn">Walk</button>
+    <button class="animationBtns" id="cleanBtn">Clean</button>
+    <button class="animationBtns" id="healBtn">Heal</button>
+
+    <script src="js/header.js" defer></script>
+    <script src="js/play.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/108/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/Three.js@r92/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="js/renderScreen.js"></script>
+
+</body>
+
+</html>
