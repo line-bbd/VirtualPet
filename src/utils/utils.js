@@ -72,6 +72,7 @@ function validRegistration(username, password, confirmPassword, users) {
 }
 
 function validLogin(username, password, users) {
+  console.log("Users from db");
   console.log(users);
   const user = users.find((user) => user.username === username);
   if (!user) {

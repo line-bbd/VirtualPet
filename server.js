@@ -1,70 +1,95 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
+require("dotenv").config();
 const path = require("path");
+const { Pool } = require("pg");
+const bcrypt = require("bcrypt");
+const express = require("express");
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
-const { Pool } = require("pg");
-
-// Connection details for the PostgreSQL server
-const connectionConfig = {
-  user: "flintlock",
-  host: "dpg-chj16le4dad01aicgihg-a.frankfurt-postgres.render.com",
-  database: "virtualpetdb_a8q9",
-  password: "pCbKiLdpJefgAWrpSDIh3UeWlEJ1fArr",
-  port: 5432,
-  ssl: true,
-};
-
-// create a new pool
-const pool = new Pool(connectionConfig);
-
-// SQL query to select all records from the users table
-const selectUsersQuery = "SELECT * FROM users;";
-
-// connect to the existing PostgreSQL server
-pool.connect((err, client, release) => {
-  if (err) {
-    console.error("Error connecting to the PostgreSQL server:", err);
-    return;
-  }
-
-  // execute the SELECT query
-  client.query(selectUsersQuery, (err, result) => {
-    release(); // release the client back to the pool
-
-    if (err) {
-      console.error("Error retrieving users:", err);
-      return;
-    }
-
-    const users = result.rows;
-    console.log("Users:", users);
-  });
-});
 
 const app = express();
-const port = 3000;
+const port = 3000; // TODO: Remove this later
 const auth = new Auth();
 const navigator = new Navigator();
 
-// TODO: just temporary. Implement to use selected pet later.
-const pet = new Pet("Fluffy");
+const connectionConfig = {
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  ssl: true,
+};
 
-// TODO: add db connection
+const pet = new Pet();
 
-// TODO: get this from db later
-const users = [
-  {
-    username: "test",
-    password: "test",
-  },
-  {
-    username: "user1",
-    password: "$2b$10$xxIQtfWunC4JoF/tqebCaOnWO4Xlur.pH4NSQhHKvKt2GuGVd.gZC",
-  },
-];
+// section for db query methods
+const getUsers = async () => {
+  const usersQuery = "SELECT * FROM users;";
+  return await executeQuery(usersQuery);
+};
+
+const addUser = async (username, password) => {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const addUserQuery = `INSERT INTO users (username, password) VALUES ('${username}', '${hashedPassword}');`;
+  await executeQuery(addUserQuery);
+};
+
+const selectPet = async (pet_id) => {
+  const selectPetQuery = `SELECT * FROM Pets WHERE pet_id = ${pet_id};`;
+  const data = JSON.parse(
+    JSON.stringify((await executeQuery(selectPetQuery))[0])
+  );
+  console.log(data);
+  pet.setPetName(data.name);
+  pet.setPetType(data.type);
+};
+
+const getPetStats = async (pet_id) => {
+  const petQuery = `SELECT * FROM Pet_stats WHERE pet_id = ${pet_id};`;
+  const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
+  return data;
+};
+
+// section ends here
+
+const setPetStats = async (data) => {
+  pet.setPetStats(
+    data.health,
+    data.happiness,
+    data.fed,
+    data.hygiene,
+    data.energy
+  );
+
+  console.log(pet);
+};
+
+const executeQuery = async (query) => {
+  const pool = new Pool(connectionConfig);
+  let client, release;
+
+  try {
+    client = await pool.connect();
+    const result = await client.query(query);
+    const data = result.rows;
+    // console.log(data);
+    return data;
+  } catch (err) {
+    console.error("Error retrieving data:", err);
+    throw err;
+  } finally {
+    if (client) {
+      release = client.release();
+    }
+    if (release) {
+      release;
+    }
+  }
+};
+
+// api section starts here
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
@@ -88,8 +113,10 @@ app.get(Pages.LOGIN.url, (req, res) => {
 
 app.post(Pages.LOGIN.url, async (req, res) => {
   try {
-    const username = await req.body.username;
-    const password = await req.body.password;
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const users = await getUsers();
 
     const login = validLogin(username, password, users);
 
@@ -103,8 +130,9 @@ app.post(Pages.LOGIN.url, async (req, res) => {
       res.json(login);
       console.log(login.message);
     }
-  } catch {
-    console.log("Error logging in!");
+  } catch (err) {
+    console.log("Error logging in:", err);
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -119,6 +147,8 @@ app.post(Pages.REGISTER.url, async (req, res) => {
     const password = await req.body.password;
     const confirmPassword = await req.body.verify;
 
+    const users = await getUsers();
+
     const registration = validRegistration(
       username,
       password,
@@ -127,9 +157,7 @@ app.post(Pages.REGISTER.url, async (req, res) => {
     );
 
     if (registration.valid) {
-      // TODO: store this in db later
-      const hashedPassword = await bcrypt.hash(password, 10);
-      console.log("adding user");
+      await addUser(username, password);
       res.redirect(Pages.LOGIN.url);
     } else {
       // response containing error message
@@ -228,31 +256,23 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-app.get("/getPetStats/:pet_id", (req, res) => {
-  connection.connect();
-  let query = "SELECT * From Pet_stats WHERE pet_id =?";
-  query = mysql.format(query, req.params.pet_id);
-  console.log(query);
+app.get("/getPetStats/:pet_id", async (req, res) => {
+  const pet_id = req.params.pet_id;
+  getPetStats(pet_id);
+});
 
-  connection.query(query, (err, rows, fields) => {
-    if (err) throw err;
-
-    res.json(rows[0]);
-  });
-
-  connection.end();
-  // res.json(pet);
+// api query to 'select' one of the existing user's pets
+app.post("/selectPet/:pet_id", async (req, res) => {
+  const pet_id = req.params.pet_id;
+  selectPet(pet_id);
+  const petStats = await getPetStats(pet_id);
+  await setPetStats(petStats);
 });
 
 // redirect user to base url if they try to access a route that doesn't exist
 app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
-
-// set routes
-const router = require("./src/routes/index");
-
-app.use(Pages.LOGIN.url, router);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
