@@ -7,6 +7,7 @@ const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
+const { get } = require("http");
 
 const app = express();
 const port = 3000; // TODO: Remove this later
@@ -34,6 +35,16 @@ const addUser = async (username, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const addUserQuery = `INSERT INTO users (username, password) VALUES ('${username}', '${hashedPassword}');`;
   await executeQuery(addUserQuery);
+};
+
+const deletePet = async (pet_id) => {
+  const deletePetQuery = `DELETE FROM Pets WHERE pet_id = ${pet_id};`;
+  await executeQuery(deletePetQuery);
+};
+
+const getPetList = async (user_id) => {
+  const petListQuery = `SELECT * FROM Pets WHERE user_id = ${user_id};`;
+  return await executeQuery(petListQuery);
 };
 
 const selectPet = async (pet_id) => {
@@ -121,7 +132,8 @@ app.post(Pages.LOGIN.url, async (req, res) => {
     const login = validLogin(username, password, users);
 
     if (login.valid) {
-      auth.login(username);
+      const id = users.find((user) => user.username === username).user_id;
+      auth.login(username, id);
       navigator.setAuth(auth);
       navigator.navigate(res, "DASHBOARD");
       res.redirect(navigator.destination.url);
@@ -180,6 +192,12 @@ app.get(Pages.DASHBOARD.url, (req, res) => {
   } else {
     res.sendFile(__dirname + navigator.destination.dir);
   }
+});
+
+app.get(Pages.DASHBOARD.url + "/petList", async (req, res) => {
+  const petList = await getPetList(auth.userID);
+  console.log(petList);
+  res.json(petList);
 });
 
 app.get(Pages.ADOPT.url, (req, res) => {
@@ -258,7 +276,7 @@ app.get("/logout", (req, res) => {
 
 app.get("/getPetStats/:pet_id", async (req, res) => {
   const pet_id = req.params.pet_id;
-  getPetStats(pet_id);
+  res.json(getPetStats(pet_id));
 });
 
 // api query to 'select' one of the existing user's pets
