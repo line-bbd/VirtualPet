@@ -1,214 +1,131 @@
 :root {
   --primaryBlue: #3498db;
   --primaryOrange: #e67e22;
-  --background: #34495e;}
-
+  --background: #34495e;
+}
 
 body {
   margin: 0px;
   background-color: var(--primaryOrange);
 }
 
-.container {
-  width: 300px;
-  height: 575px;
-  margin: 30px auto;
-}
-
 .card {
-  border-radius: 25px;
-  border: 1px solid #353535;
-  box-shadow: 11px 11px 1px rgba(0, 0, 0, 0.3);
+  border-radius: 1.563rem;
+  box-shadow: 0.625rem 0.625rem 0.063rem rgba(0, 0, 0, 0.3);
+  width: 31.25rem;
+  height: 15.625rem;
+  margin: 1.875rem;
+  background-color: var(--background);
 }
 
-.card-head {
+.card-img {
+  width: 100%;
+  height: 75%;
+  border-top-left-radius: 1.563rem;
+  border-top-right-radius: 1.563rem;
+  image-rendering: crisp-edges;
+}
+
+.lower-card {
+  display: inline-flex;
+}
+
+.pet-name {
   position: relative;
-  height: 265px;
-  background: #296cc8;
-  /* Old browsers */
-  background: -moz-linear-gradient(-45deg, #43cea2, #185a9d);
-  /* FF3.6-15 */
-  background: -webkit-linear-gradient(-45deg, #43cea2, #185a9d);
-  /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(135deg, #43cea2, #185a9d);
-  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#43cea2', endColorstr='#185a9d', GradientType=1);
-  /* IE6-9 fallback on horizontal gradient */
-  border-radius: 25px 25px 0 0;
+  left: 1.25rem;
+  font-size: 1.5rem;
+  font-family: 'Courier New', monospace;
+  color: azure;
 }
 
-.animal-img {
-  /*img is 150px because it would be to big for the card visually*/
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  box-shadow: 4px 4px 3px rgba(0, 0, 0, 0.2);
-  margin-bottom: 10px;
-  object-fit: cover;
-}
-
-.animal-detail {
-  padding: 15px;
-  font-size: 11px;
-  color: #fff;
-  text-align: center;
-}
-
-.animal-detail h2 {
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 2px;
-  padding-bottom: 10px;
-  text-transform: uppercase;
-}
-
-.animal-detail p {
-  font-size: 12px;
-  font-weight: 200;
-  letter-spacing: 2px;
-  font-style: italic;
-}
-
-.card-body {
-  height: 310px;
-  background: #fff;
-  border-radius: 0 0 25px 25px;
-  border: 1px solid white;
-}
-
-.animal-title h1 {
-  padding: 20px 20px 5px 20px;
-  display: block;
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.badge {
+.card-button {
   position: relative;
-  font-size: 10px;
-  font-weight: 300;
-  color: #fff;
-  background: #43cea2;
-  padding: 2px 5px;
-  border-radius: 4px;
-  top: -2px;
-  margin-left: 5px;
+  left: 18.75rem;
+  margin: 0.313rem;
+  background-color: var(--primaryOrange);
+  border: none;
+  padding: 0.313rem;
+  font-size: 1.875rem;
+  height: 3.125rem;
+  width: 3.125rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30%;
+  align-content: center;
 }
 
-.animal-caption {
-  display: block;
-  padding: 0 20px;
-  font-size: 10px;
-  font-weight: 400;
-  font-style: italic;
+button:hover {
+  background-color: #65b9e6;
 }
 
-.animal-info h4 {
-  font-size: 12px;
-  padding: 0 21px;
-  margin-top: 15px;
-  padding-bottom: 10px;
-  text-transform: uppercase;
+.icon-style {
+  color: white;
 }
 
-ul {
-  list-style: none;
-  font-size: 12px;
-  padding: 0 30px;
-}
-
-.labels {
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #404040;
-}
-
-.animal-discription h4 {
-  font-size: 12px;
-  padding: 0 21px;
-  margin-top: 20px;
-  padding-bottom: 10px;
-  text-transform: uppercase;
-}
-
-.animal-discription p {
-  font-size: 12px;
-  padding: 0 28px;
-}
-
-
-.wrapper
-{
+.wrapper {
   position: relative;
 }
-#canvas
-{
+
+#canvas {
   height: 100%;
   width: 100%;
 }
 
-.arrows{
+.arrows {
   width: 7rem;
   height: 7rem;
   position: absolute;
 }
 
-.animationLbls{
+.animationLbls {
+  width: 7rem;
+  height: 2.5rem;
+  position: absolute;
 
-    width: 7rem;
-    height: 2.5rem;
-    position: absolute;
-
-    font-family: 'Roboto', sans-serif;
-    font-size: 2rem;
-    font-weight: 500;
-    letter-spacing: 0.05rem;
-    font-style: italic;
-    color: #000000;
-    background-color: #837569;
-    border-radius: 2rem;
-    -webkit-border-radius: 2rem;
-    -moz-border-radius: 2rem;
-    padding: 1rem 1rem;
-    opacity: 0.7;
-    text-align: left;
-
-
+  font-family: 'Roboto', sans-serif;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: 0.05rem;
+  font-style: italic;
+  color: #000000;
+  background-color: #837569;
+  border-radius: 2rem;
+  -webkit-border-radius: 2rem;
+  -moz-border-radius: 2rem;
+  padding: 1rem 1rem;
+  opacity: 0.7;
+  text-align: left;
 }
 
-#healthLbl{
+#healthLbl {
   top: 2rem;
   left: 10rem;
 }
 
-#foodLbl{
+#foodLbl {
   top: 2rem;
   left: 20rem;
 }
 
-#attentionLbl{
+#attentionLbl {
   top: 2rem;
   left: 30rem;
 }
 
-#sickLbl{
+#sickLbl {
   top: 2rem;
   left: 40rem;
 }
 
-#cleanLbl{
+#cleanLbl {
   top: 2rem;
   left: 50rem;
 }
 
-.imgIcons{
+.imgIcons {
   width: 2rem;
   height: 2rem;
 }
-
-
 
 .animationBtns {
   width: 7rem;
@@ -221,7 +138,7 @@ ul {
   font-family: Helvetica;
   font-size: 2rem;
   padding: 0.5rem;
-  background-color: var(--background);;
+  background-color: var(--background);
   border: solid var(--primaryOrange) 0.1rem;
   text-decoration: none;
   display: inline-block;
@@ -231,7 +148,7 @@ ul {
 }
 
 .animationBtns:hover {
-  background: var(--primaryBlue);;
+  background: var(--primaryBlue);
   border: solid var(--primaryOrange) 5px;
   -webkit-border-radius: 100px;
   -moz-border-radius: 100px;
@@ -239,25 +156,25 @@ ul {
   text-decoration: none;
 }
 
-#feedBtn{
+#feedBtn {
   position: absolute;
   bottom: 10rem;
   right: 15rem;
 }
 
-#walkBtn{
+#walkBtn {
   position: absolute;
   bottom: 5rem;
   right: 15rem;
 }
 
-#cleanBtn{
+#cleanBtn {
   position: absolute;
   bottom: 5rem;
   right: 5rem;
 }
 
-#healBtn{
+#healBtn {
   position: absolute;
   bottom: 10rem;
   right: 5rem;
