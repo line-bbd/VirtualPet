@@ -7,7 +7,7 @@ class HeaderNotLoggedIn extends HTMLElement {
     this.innerHTML = `
     <style>
     header{
-      background-color: #3498db;
+      background-image: url('https://e0.pxfuel.com/wallpapers/619/537/desktop-wallpaper-teal-and-white-dog-paw-prints-puppy-bone-and-hearts-tile-pattern-paw-print-background-dog-paw-print-paw-print-thumbnail.jpg');
     }
 
     header::after {
@@ -92,7 +92,7 @@ class HeaderLoggedIn extends HTMLElement {
     this.innerHTML = `
     <style>
     header{
-      background-color: #3498db;
+      background-image: url('https://e0.pxfuel.com/wallpapers/619/537/desktop-wallpaper-teal-and-white-dog-paw-prints-puppy-bone-and-hearts-tile-pattern-paw-print-background-dog-paw-print-paw-print-thumbnail.jpg');
     }
 
     header::after {
@@ -170,5 +170,5 @@ class HeaderLoggedIn extends HTMLElement {
   }
 }
 
-customElements.define("header-out-component", HeaderNotLoggedIn);
-customElements.define("header-in-component", HeaderLoggedIn);
+customElements.define('header-out-component', HeaderNotLoggedIn);
+customElements.define('header-in-component', HeaderLoggedIn);
