@@ -53,3 +53,8 @@ document
       console.error(error);
     }
   });
+
+function refreshPet()
+{
+    seenExtPetId.push(currPet.id);
+}

@@ -6,12 +6,14 @@ const express = require("express");
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
+const extAPI = require('./public/js/petfinderAPI');
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 
 const app = express();
 const port = 3000; // TODO: Remove this later
 const auth = new Auth();
 const navigator = new Navigator();
+const petfinderAPI = new extAPI();
 
 const connectionConfig = {
   user: process.env.DB_USER,
@@ -329,6 +331,12 @@ app.put("/updatePetStats", async (req, res) => {
   );
 });
 
+app.get("/getDog/:seenExtPetId", async (req, res) => {
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId,1);
+
+  res.json(results);
+
+});
 // redirect user to base url if they try to access a route that doesn't exist
 app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
