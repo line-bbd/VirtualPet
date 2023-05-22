@@ -74,7 +74,7 @@ const executeQuery = async (query) => {
     client = await pool.connect();
     const result = await client.query(query);
     const data = result.rows;
-    // console.log(data);
+    console.log("d", data.type);
     return data;
   } catch (err) {
     console.error("Error retrieving data:", err);
@@ -104,7 +104,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
 
 // set views
 app.get(Pages.LOGIN.url, (req, res) => {
@@ -257,51 +256,58 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-
-
 //PET DB QUERIES: Waiting for hosted database
-app.get("/addPet", (req, res) => {
-  const externalID = req.params.externalID;
-  const userID = req.params.id;
-  const name = req.params.name;
-  const dateCreated = req.params.dateCreated;
-  const type = req.params.type;
-  
- 
-  const insertStatement =
-    "INSERT INTO Pets (externalID, user_id, name, date_created, type) VALUES (?,?,?,?,?)";
+app.post("/addPet", async (req, res) => {
+  const externalID = req.body.externalID;
+  const userID = req.body.id;
+  const name = req.body.name;
+  const dateCreated = req.body.dateCreated;
+  const type = req.body.type;
+
+  await executeQuery(
+    `INSERT INTO pets (pet_id, pet_external_id, user_id, name, date_created, type) VALUES (1,${externalID}, ${userID}, ${dateCreated}, ${name}, ${type})`
+  );
 });
 
-app.get("/getPet/:petID", (req, res) => {
+app.get("/getDog/:seenExtPetId", async (req, res) => {
+  console.log("hi")
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId,1);
+console.log(results,"hgngf")
+  res.json(results);
+
+});
+
+app.get("/getPet/:petID", async (req, res) => {
   const petID = req.params.petID;
-  
-  const selectStatement =
-    "SELECT * FROM Pets WHERE pet_id = ?";
+
+  const data = JSON.parse(
+    JSON.stringify(
+      await executeQuery(`SELECT * FROM Pets WHERE pet_id = ${petID}`)
+    )
+  );
+  res.json(data);
 });
 
-app.get("/getUserPets/:userId", (req, res) => {
+app.get("/getUserPets/:userId", async (req, res) => {
   const userId = req.params.userId;
-  
-  const selectStatement =
-    "SELECT * FROM Pets WHERE user_id= ?";
+  const data = JSON.parse(
+    JSON.stringify(
+      await executeQuery(`SELECT * FROM Pets WHERE user_id= ${userId}`)
+    )
+  );
+  res.json(data);
 });
 
-app.get("/getPetStats/:pet_id", (req, res) => {
-  connection.connect();
-  let query = "SELECT * From Pet_stats WHERE pet_id =?";
-  query = mysql.format(query, req.params.pet_id);
-  console.log(query);
-
-  connection.query(query, (err, rows, fields) => {
-    if (err) throw err;
-
-    res.json(rows[0]);
-  });
 app.get("/getPetStats/:pet_id", async (req, res) => {
   const pet_id = req.params.pet_id;
   getPetStats(pet_id);
 });
 
+app.get("/getExternalIDs", async (req, res) => {
+  const selectStatement = "SELECT pet_external_id From pets";
+  const data = JSON.parse(JSON.stringify(await executeQuery(selectStatement)));
+  res.json(data);
+});
 // api query to 'select' one of the existing user's pets
 app.post("/selectPet/:pet_id", async (req, res) => {
   const pet_id = req.params.pet_id;
@@ -310,18 +316,18 @@ app.post("/selectPet/:pet_id", async (req, res) => {
   await setPetStats(petStats);
 });
 
-app.get("/getExternalID", (req, res) => {
-  const query = 'SELECT external_id From Pets';
+app.put("/updatePetStats", async (req, res) => {
+  const petID = req.body.petID;
+  const health = req.body.health;
+  const happiness = req.body.happiness;
+  const energy = req.body.happiness;
+  const fed = req.body.fed;
+  const hygiene = req.body.hygiene;
 
-  // res.json(pet);
+  await executeQuery(
+    `UPDATE pet_stats SET health = ${health}, happiness = ${happiness}, energy = ${energy}, fed = ${fed}, hygiene = ${hygiene} WHERE pet_id = ${petID}`
+  );
 });
-
-app.get("/updatePetStats/:pet_id", (req, res) => {
-  const petID = req.params.petID;
-  
- const updateStatement = "UPDATE users SET Name = ?, Surname = ?, Email = ? WHERE id = ?"
-});
-
 
 // redirect user to base url if they try to access a route that doesn't exist
 app.get("*", (req, res) => {
@@ -329,9 +335,9 @@ app.get("*", (req, res) => {
 });
 
 // set routes
-const router = require("./src/routes/index");
+// const router = require("./src/routes/index");
 
-app.use(Pages.LOGIN.url, router);
+// app.use(Pages.LOGIN.url, router);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

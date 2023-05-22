@@ -12,9 +12,11 @@
       href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
       rel="stylesheet"
     />
+    <script src="js/header.js" defer></script>
 </head>
 
   <body>
+    <!-- <header-out-component></header-out-component> -->
     <main class="container">
       <section id="top-bar" class="row">
         <h1>Adopt a new pet</h1>
@@ -24,21 +26,21 @@
         <h1>Basic info</h1>
       </section>
 
-      <div class="con1">
+      <article class="con1">
         <section></section>
         <form id="adoptForm" method="post">
-          <section class="input">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="user_name" required />
+          <section class="inputSection">
+            <label for="name" id="nameLbl">Name</label>
+            <input type="text" id="nameInput" name="user_name" readonly />
           </section>
 
-          <section class="input">
-            <label for="Type">Type</label>
-            <input name="user_mail" id="Type" />
+          <section class="inputSection">
+            <label for="Type" id="typeLbl">Type</label>
+            <input name="user_mail" id="typeInput" readonly/>
           </section>
-          <section class="input">
-            <label for="type">Trait</label>
-            <input name="Trait" id="type" required pattern="banana|cherry" />
+          <section class="inputSection">
+            <label for="type" id="traitLbl">Trait</label>
+            <input name="Trait" id="traitInput" readonly/>
           </section>
           <figure class="image">
             <img src="https://picsum.photos/400" alt="pet picture" />
@@ -46,13 +48,13 @@
         </form>
 
         <section class="formButton">
-          <button class="button" type="submit" form="adoptForm">
+          <button class="Adoptbutton">
             Adopt a new pet
           </button>
         </section>
-      </div>
+      </article>
     </main>
-    <script type="module" src="js/adopt.js"></script>
+    <script src="js/adopt.js" defer></script>
     <!-- <script type="module" src="js/petFinderAPI.js"></script> -->
 
   </body>
