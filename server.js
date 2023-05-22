@@ -91,6 +91,11 @@ const executeQuery = async (query) => {
   }
 };
 
+const updatePetStats = async (pet) => {
+  await executeQuery(
+    `UPDATE pet_stats SET health = ${pet.health}, happiness = ${pet.happiness}, energy = ${pet.energy}, fed = ${pet.fed}, hygiene = ${pet.hygiene} WHERE pet_id = ${pet.id}`
+  );
+};
 // api section starts here
 
 // Serve static files from the public directory
@@ -185,7 +190,7 @@ app.get(Pages.DASHBOARD.url, (req, res) => {
 });
 
 app.get(Pages.ADOPT.url, (req, res) => {
-  console.log("ADOPT");
+  console.log("ADOPT",pet);
   console.log(auth);
   navigator.navigate(res, "ADOPT");
   if (navigator.destination === Pages.LOGIN) {
@@ -218,6 +223,7 @@ app.post(Pages.VIEWPET.url, (req, res) => {
 
 app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
   pet.giveAttention();
+  updatePetStats(pet)
   console.log(pet);
   res.json(pet);
 });
@@ -274,8 +280,7 @@ app.post("/addPet", async (req, res) => {
 app.get("/getDog/:seenExtPetId", async (req, res) => {
   console.log("hi")
   let results = await petfinderAPI.getDog(req.params.seenExtPetId,1);
-console.log(results,"hgngf")
-  res.json(results);
+ res.json(results);
 
 });
 
@@ -318,18 +323,19 @@ app.post("/selectPet/:pet_id", async (req, res) => {
   await setPetStats(petStats);
 });
 
-app.put("/updatePetStats", async (req, res) => {
-  const petID = req.body.petID;
-  const health = req.body.health;
-  const happiness = req.body.happiness;
-  const energy = req.body.happiness;
-  const fed = req.body.fed;
-  const hygiene = req.body.hygiene;
+// app.put("/updatePetStats", async (req, res) => {
+//   const petID = req.body.petID;
+//   const health = req.body.health;
+//   const happiness = req.body.happiness;
+//   const energy = req.body.happiness;
+//   const fed = req.body.fed;
+//   const hygiene = req.body.hygiene;
 
-  await executeQuery(
-    `UPDATE pet_stats SET health = ${health}, happiness = ${happiness}, energy = ${energy}, fed = ${fed}, hygiene = ${hygiene} WHERE pet_id = ${petID}`
-  );
-});
+//   await executeQuery(
+//     `UPDATE pet_stats SET health = ${health}, happiness = ${happiness}, energy = ${energy}, fed = ${fed}, hygiene = ${hygiene} WHERE pet_id = ${petID}`
+//   );
+// });
+
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
   let results = await petfinderAPI.getDog(req.params.seenExtPetId,1);
