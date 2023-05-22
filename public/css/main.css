@@ -9,6 +9,12 @@ body {
   background-color: var(--primaryOrange);
 }
 
+.card-layout {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15.625rem;
+}
+
 .card {
   border-radius: 1.563rem;
   box-shadow: 0.625rem 0.625rem 0.063rem rgba(0, 0, 0, 0.3);
@@ -28,6 +34,7 @@ body {
 
 .lower-card {
   display: inline-flex;
+  width: 100%;
 }
 
 .pet-name {
@@ -38,9 +45,12 @@ body {
   color: azure;
 }
 
+.card-buttons {
+  margin-left: auto;
+}
+
 .card-button {
   position: relative;
-  left: 18.75rem;
   margin: 0.313rem;
   background-color: var(--primaryOrange);
   border: none;
@@ -49,9 +59,7 @@ body {
   height: 3.125rem;
   width: 3.125rem;
   cursor: pointer;
-  transition: all 0.2s ease;
   border-radius: 30%;
-  align-content: center;
 }
 
 button:hover {
