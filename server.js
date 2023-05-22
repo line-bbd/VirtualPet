@@ -20,8 +20,13 @@ const auth = new Auth();
 const navigator = new Navigator();
 const petfinderAPI = new extAPI();
 
+//TODO: the logic is as follows:
+//When the user enters the play page the pet is initialized
+//All the interactions are done on this pet model(feed,walk etc)
+//The changes are then persisted when they logout, exit etc
+
 // TODO: just temporary. Implement to use selected pet later.
-const pet = new Pet("Fluffy");
+let petInSession;
 
 // TODO: add db connection
 
@@ -127,51 +132,72 @@ app.get(Pages.VIEWPET.url, (req, res) => {
   }
 });
 
-app.post(Pages.VIEWPET.url, (req, res) => {
-  // feed endpoint
-  const { feed } = req.query;
-  if (feed === "true") {
-    pet.feed();
-    console.log(pet);
-  }
+// app.post(Pages.VIEWPET.url, (req, res) => {
+//   // feed endpoint
+//   const { feed } = req.query;
+//   if (feed === "true") {
+//     pet.feed();
+//     console.log(pet);
+//   }
+// });
+
+app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
+  petInSession.feed();
+  console.log(petInSession);
+  res.json(petInSession);
+  // connection.connect();
+  // let query = 'Update pet_stats set hunger = ?, bordem = ?, health = ?, thirst = ?, hygiene = ? where pet_id = ?';
+  // query = mysql.format(query,req.params.pet_id);
+
+  // connection.query(query, (err, rows, fields) => {
+  //   if (err) throw err
+  //   petInSession.feed();
+
+  //   res.json(rows[0]);
+    
+  // })
+
+  // pet.feed();
+  // console.log(pet);
+  // res.json(pet);
 });
 
 
 app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
-  pet.giveAttention();
-  console.log(pet);
-  res.json(pet);
+  petInSession.giveAttention();
+  console.log(petInSession);
+  res.json(petInSession);
 });
 
 app.post(Pages.VIEWPET.url + "/medicine", (req, res) => {
-  pet.giveMedicine();
-  console.log(pet);
-  res.json(pet);
+  petInSession.giveMedicine();
+  console.log(petInSession);
+  res.json(petInSession);
 });
 
 app.post(Pages.VIEWPET.url + "/bath", (req, res) => {
-  pet.giveBath();
-  console.log(pet);
-  res.json(pet);
+  petInSession.giveBath();
+  console.log(petInSession);
+  res.json(petInSession);
 });
 
-app.post(Pages.VIEWPET.url + "/treat", (req, res) => {
-  pet.giveTreat();
-  console.log(pet);
-  res.json(pet);
-});
+// app.post(Pages.VIEWPET.url + "/treat", (req, res) => {
+//   pet.giveTreat();
+//   console.log(pet);
+//   res.json(pet);
+// });
 
-app.post(Pages.VIEWPET.url + "/toy", (req, res) => {
-  pet.giveToy();
-  console.log(pet);
-  res.json(pet);
-});
+// app.post(Pages.VIEWPET.url + "/toy", (req, res) => {
+//   pet.giveToy();
+//   console.log(pet);
+//   res.json(pet);
+// });
 
-app.post(Pages.VIEWPET.url + "/sleep", (req, res) => {
-  pet.sleep();
-  console.log(pet);
-  res.json(pet);
-});
+// app.post(Pages.VIEWPET.url + "/sleep", (req, res) => {
+//   pet.sleep();
+//   console.log(pet);
+//   res.json(pet);
+// });
 
 app.get("/logout", (req, res) => {
   auth.logout();
@@ -179,18 +205,21 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-app.get("/getPetStats/:pet_id", (req, res) => {
-  connection.connect();
+app.get(Pages.VIEWPET.url + "/getPetStats/:pet_id", (req, res) => {
+  // connection.connect();
   let query = 'SELECT * From Pet_stats WHERE pet_id =?';
   query = mysql.format(query,req.params.pet_id);
   connection.query(query, (err, rows, fields) => {
-    if (err) throw err
+    if (err) throw err 
+    let result = rows[0];
+    console.log(result);
+    petInSession = new Pet(result.health,result.happiness,result.fed,result.hygiene,result.energy);
 
     res.json(rows[0]);
     
   })
 
-  connection.end();
+  // connection.end();
   // res.json(pet);
 });
 
