@@ -178,7 +178,6 @@ app.post(Pages.REGISTER.url, async (req, res) => {
       confirmPassword,
       users
     );
-
     if (registration.valid) {
       await addUser(username, password);
       res.redirect(Pages.LOGIN.url);

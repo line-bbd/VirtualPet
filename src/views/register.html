@@ -13,9 +13,9 @@
   <container class="RegisterContainer">
     <h2>Register</h2>
     <form action="/register" method="POST">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <input type="password" id="verifyPassword" placeholder="Confirm Password" required>
+      <input type="text" id="username" name="username" placeholder="Username" required>
+      <input type="password" id="password" name="password" placeholder="Password" required>
+      <input type="password" id="verify" name="verify" placeholder="Confirm Password" required>
       <button type="submit">Register</button>
     </form>
     <p>Already have an account? <a href="/login">Login</a></p>
