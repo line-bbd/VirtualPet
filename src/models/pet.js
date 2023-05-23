@@ -10,21 +10,13 @@ class Pet {
     this.energy = 100;
   }
 
-  setPetName(name) {
-    this.name = name;
-  }
-
-  setPetType(type) {
-    this.type = type;
-  }
-
-  setPetStats(health, happiness, fed, hygiene, energy) {
-    this.health = health;
-    this.happiness = happiness;
-    this.fed = fed;
-    this.hygiene = hygiene;
-    this.energy = energy;
-  }
+  // constructor(health,happiness,fed,hygiene,energy){
+  //   this.health = health;
+  //   this.happiness = happiness;
+  //   this.fed = fed;
+  //   this.hygiene = hygiene;
+  //   this.energy = energy;
+  // }
 
   feed() {
     this.fed += 5;
@@ -38,8 +30,6 @@ class Pet {
     this.energy -= 3;
     this.message = "You gave your pet attention!";
   }
-
-  // TODO: Add walk method
 
   giveMedicine() {
     this.health += 5;
@@ -55,25 +45,25 @@ class Pet {
     this.message = "You gave your pet a bath!";
   }
 
-  giveTreat() {
-    this.happiness += 5;
-    this.hunger += 2;
-    this.energy -= 3;
-    this.message = "You gave your pet a treat!";
-  }
+  // giveTreat() {
+  //   this.happiness += 5;
+  //   this.hunger += 2;
+  //   this.energy -= 3;
+  //   this.message = "You gave your pet a treat!";
+  // }
 
-  giveToy() {
-    this.happiness += 5;
-    this.energy -= 3;
-    this.message = "You gave your pet a toy!";
-  }
+  // giveToy() {
+  //   this.happiness += 5;
+  //   this.energy -= 3;
+  //   this.message = "You gave your pet a toy!";
+  // }
 
-  sleep() {
-    this.energy += 20;
-    this.happiness += 10;
-    this.hunger -= 5;
-    this.message = "You put your pet to bed!";
-  }
+  // sleep() {
+  //   this.energy += 20;
+  //   this.happiness += 10;
+  //   this.hunger -= 5;
+  //   this.message = "You put your pet to bed!";
+  // }
 }
 
 module.exports = Pet;

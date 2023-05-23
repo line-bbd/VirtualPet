@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    let pet_id = '3';
-    const response = await fetch("/getPetStats/"+pet_id);
+    let pet_id = '3';//TODO need to get selected pet id here
+    const response = await fetch("/viewPet/getPetStats/"+pet_id);
     if (!response.ok) {
       throw new Error("Failed to fetch pet stats");
     }
@@ -39,13 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function handleFeedAction() {
   try {
-    console.log("FEEEEEEDD");
-    const response = await fetch("/viewPet?feed=true", { method: "POST" });
+    const response = await fetch("/viewPet/feed", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to feed the pet");
     }
     const updatedPetStats = await response.json();
-
     // Update the DOM with the updated pet stats
     updatePetStats(updatedPetStats);
   } catch (error) {
@@ -55,7 +53,7 @@ async function handleFeedAction() {
 
 async function handleWashAction() {
   try {
-    const response = await fetch("/viewPet?bath=true", { method: "POST" });
+    const response = await fetch("/viewPet/bath", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to wash the pet");
     }
@@ -68,24 +66,24 @@ async function handleWashAction() {
   }
 }
 
-async function handleWaterAction() {
-  try {
-    const response = await fetch("/viewPet?water=true", { method: "POST" });
-    if (!response.ok) {
-      throw new Error("Failed to give water to the pet");
-    }
-    const updatedPetStats = await response.json();
-
-    // Update the DOM with the updated pet stats
-    updatePetStats(updatedPetStats);
-  } catch (error) {
-    console.error(error);
-  }
-}
+// async function handleWaterAction() {
+//   try {
+//     const response = await fetch("/viewPet?water=true", { method: "POST" });
+//     if (!response.ok) {
+//       throw new Error("Failed to give water to the pet");
+//     }
+//     const updatedPetStats = await response.json();
+    
+//     // Update the DOM with the updated pet stats
+//     updatePetStats(updatedPetStats);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
 async function handleAttentionAction() {
   try {
-    const response = await fetch("/viewPet?attention=true", { method: "POST" });
+    const response = await fetch("/viewPet/attention", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to give attention to the pet");
     }
@@ -100,7 +98,7 @@ async function handleAttentionAction() {
 
 async function handleMedicineAction() {
   try {
-    const response = await fetch("/viewPet?medicine=true", { method: "POST" });
+    const response = await fetch("/viewPet/medicine", { method: "POST" });
     if (!response.ok) {
       throw new Error("Failed to give medicine to the pet");
     }
@@ -113,57 +111,57 @@ async function handleMedicineAction() {
   }
 }
 
-async function handleTreatAction() {
-  try {
-    const response = await fetch("/viewPet?treat=true", { method: "POST" });
-    if (!response.ok) {
-      throw new Error("Failed to give a treat to the pet");
-    }
-    const updatedPetStats = await response.json();
+// async function handleTreatAction() {
+//   try {
+//     const response = await fetch("/viewPet?treat=true", { method: "POST" });
+//     if (!response.ok) {
+//       throw new Error("Failed to give a treat to the pet");
+//     }
+//     const updatedPetStats = await response.json();
 
-    // Update the DOM with the updated pet stats
-    updatePetStats(updatedPetStats);
-  } catch (error) {
-    console.error(error);
-  }
-}
+//     // Update the DOM with the updated pet stats
+//     updatePetStats(updatedPetStats);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
-async function handleToyAction() {
-  try {
-    const response = await fetch("/viewPet?toy=true", { method: "POST" });
-    if (!response.ok) {
-      throw new Error("Failed to give a toy to the pet");
-    }
-    const updatedPetStats = await response.json();
+// async function handleToyAction() {
+//   try {
+//     const response = await fetch("/viewPet?toy=true", { method: "POST" });
+//     if (!response.ok) {
+//       throw new Error("Failed to give a toy to the pet");
+//     }
+//     const updatedPetStats = await response.json();
 
-    // Update the DOM with the updated pet stats
-    updatePetStats(updatedPetStats);
-  } catch (error) {
-    console.error(error);
-  }
-}
+//     // Update the DOM with the updated pet stats
+//     updatePetStats(updatedPetStats);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
-async function handleSleepAction() {
-  try {
-    const response = await fetch("/viewPet?sleep=true", { method: "POST" });
-    if (!response.ok) {
-      throw new Error("Failed to put the pet to sleep");
-    }
-    const updatedPetStats = await response.json();
+// async function handleSleepAction() {
+//   try {
+//     const response = await fetch("/viewPet?sleep=true", { method: "POST" });
+//     if (!response.ok) {
+//       throw new Error("Failed to put the pet to sleep");
+//     }
+//     const updatedPetStats = await response.json();
 
-    // Update the DOM with the updated pet stats
-    updatePetStats(updatedPetStats);
-  } catch (error) {
-    console.error(error);
-  }
-}
+//     // Update the DOM with the updated pet stats
+//     updatePetStats(updatedPetStats);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
 function updatePetStats(petStats) {
 
   
   document.getElementById("healthLbl").childNodes[2].textContent = " "+petStats.health*10;//TODO: This needs to change to a happiness label
-  document.getElementById("foodLbl").childNodes[2].textContent = " "+petStats.hunger*10;
-  document.getElementById("attentionLbl").childNodes[2].textContent = " "+petStats.bordem*10;
-  document.getElementById("sickLbl").childNodes[2].textContent = " "+petStats.thirst*10;
+  document.getElementById("foodLbl").childNodes[2].textContent = " "+petStats.fed*10;
+  document.getElementById("attentionLbl").childNodes[2].textContent = " "+petStats.energy*10;
+  document.getElementById("sickLbl").childNodes[2].textContent = " "+petStats.happiness*10;
   document.getElementById("cleanLbl").childNodes[2].textContent = " "+petStats.hygiene*10;
 }
