@@ -160,8 +160,6 @@ class HeaderLoggedIn extends HTMLElement {
       <nav>
         <ul>
           <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/adopt">Adopt a pet</a></li>
-          <li><a href="/viewPet">Play</a></li>
           <li><a href="/logout">Sign Out</a></li>
         </ul>
       </nav>
