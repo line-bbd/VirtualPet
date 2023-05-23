@@ -10,6 +10,7 @@ const extAPI = require('./public/js/petfinderAPI');
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 
 const app = express();
+app.use(express.json());
 const port = 3000; // TODO: Remove this later
 const auth = new Auth();
 const navigator = new Navigator();
@@ -96,7 +97,6 @@ const updatePetStats = async (pet) => {
     `UPDATE pet_stats SET health = ${pet.health}, happiness = ${pet.happiness}, energy = ${pet.energy}, fed = ${pet.fed}, hygiene = ${pet.hygiene} WHERE pet_id = ${pet.id}`
   );
 };
-// api section starts here
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
@@ -266,19 +266,18 @@ app.get("/logout", (req, res) => {
 
 //PET DB QUERIES: Waiting for hosted database
 app.post("/addPet", async (req, res) => {
+  const petID = req.body.petID;
   const externalID = req.body.externalID;
   const userID = req.body.id;
   const name = req.body.name;
   const dateCreated = req.body.dateCreated;
   const type = req.body.type;
-
   await executeQuery(
-    `INSERT INTO pets (pet_id, pet_external_id, user_id, name, date_created, type) VALUES (1,${externalID}, ${userID}, ${dateCreated}, ${name}, ${type})`
+    `INSERT INTO pets (pet_id, pet_external_id, user_id, name, date_created, type) VALUES (${petID}, ${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`
   );
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
-  console.log("hi")
   let results = await petfinderAPI.getDog(req.params.seenExtPetId,1);
  res.json(results);
 

@@ -1,5 +1,6 @@
 class Pet {
-  constructor(name) {
+  constructor(name,id) {
+    this.id=id;
     this.type = "Generic Pet";
     this.name = name;
     this.health = 100;
