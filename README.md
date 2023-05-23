@@ -10,4 +10,4 @@
 
 # Links:
 1. Link so figma: https://www.figma.com/file/gBwMusScFyJOwL8DpI5pW2/Virtual-pets-application?type=design&t=LcKrwEH3nQO8RFcG-1
-2. Hosted on https://nodejsvirtualpet.onrender.com 
+2. Hosted on [https://nodejsvirtualpet.onrender.com ](https://virtualpet.onrender.com/)
