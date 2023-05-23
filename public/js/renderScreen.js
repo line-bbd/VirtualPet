@@ -12,7 +12,7 @@
       clock = new THREE.Clock(),
       loader,
       fileAnimations,
-      currentlyAnimating = false,         
+      currentlyAnimating = false,    
       raycaster = new THREE.Raycaster();
 
       const modelPath = 'animationModels/pets/pixelDog.glb';
@@ -67,7 +67,7 @@
         idle = mixer.clipAction(idleAnim);
         idle.play();
 
-        click_anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Eating'));
+        click_anim = mixer.clipAction(THREE.AnimationClip.findByName(fileAnimations, 'Attack'));
     }
 
     function createPathStrings(filename) {
@@ -208,58 +208,6 @@
             }
         );
     }
-// TODO Use the css file for the colours
-    // function makeButton(radiusX,radiusY,x,y,z,borderColor,color,words)
-    // {
-    //     let path = new THREE.Shape();
-    //     path.absellipse(0,0,radiusX+0.2,radiusY+0.2,0, Math.PI*2, false,0);
-    //     let geometry = new THREE.ShapeBufferGeometry( path );
-    //     let material = new THREE.MeshBasicMaterial( { color: borderColor} );
-    //     let border = new THREE.Mesh( geometry, material );
-    //     border.position.set(x,y,z);
-    //     border.renderOrder = 997;
-    //     scene.add(border)
-    //     border.material.depthTest = false;
-    //     border.material.depthWrite = false;
-    //     border.onBeforeRender = function (renderer) { renderer.clearDepth(); };
-
-
-    //     path = new THREE.Shape();
-    //     path.absellipse(0,0,radiusX,radiusY,0, Math.PI*2, false,0);
-    //     geometry = new THREE.ShapeBufferGeometry( path );
-    //     material = new THREE.MeshBasicMaterial( { color: color} );
-    //     let button = new THREE.Mesh( geometry, material );
-    //     button.position.set(x,y,z);
-
-    //     button.renderOrder = 998;
-    //     button.material.depthTest = false;
-    //     button.material.depthWrite = false;
-    //     button.onBeforeRender = function (renderer) { renderer.clearDepth(); };
-    //     scene.add(button);
-
-    //     const loader = new THREE.FontLoader();
-    //     loader.load( 'fonts/helvetiker_bold.typeface.json', function ( font ) {
-
-    //         const textGeo = new THREE.TextGeometry( "Feed", {
-        
-    //             font: font,
-    //             size: 5,
-    //             height: 1,
-        
-    //         } );
-        
-    //         const textMaterial = new THREE.MeshPhongMaterial( { color: color } );
-        
-    //         const mesh = new THREE.Mesh( textGeo, textMaterial );
-    //         mesh.position.set( 30, -17, -20 );
-    //         // mesh.rotation.y = -0.1 * Math.PI;
-    //         mesh.renderOrder = 999;
-
-
-    //         scene.add( mesh );
-    //     });
-    //     return button;
-    // }
 
     function loadButtons()
     {
@@ -310,6 +258,7 @@
         camera.position.y = -3;
 
         const canvas = document.getElementById("canvas");
+        laoderAnim = document.getElementById('js-loader');
         renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
         renderer.shadowMap.enabled = true;
         renderer.setPixelRatio(window.devicePixelRatio);
