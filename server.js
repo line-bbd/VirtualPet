@@ -17,6 +17,7 @@ const navigator = new Navigator();
 const petfinderAPI = new extAPI();
 
 let petInSession = new Pet();
+let timerFunction;
 
 //TODO: the logic is as follows:
 //When the user enters the play page the pet is initialized
@@ -84,8 +85,6 @@ const persistPetStats = async (pet_id) => {
   hygiene = ${petInSession.hygiene}
   WHERE pet_id = ${pet_id};`;
   executeQuery(petQuery);
-  // const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
-  // return data;
 };
 
 // section ends here
@@ -104,7 +103,6 @@ const executeQuery = async (query) => {
     client = await pool.connect();
     const result = await client.query(query);
     const data = result.rows;
-    console.log("d", data.type);
     return data;
   } catch (err) {
     console.error("Error retrieving data:", err);
@@ -280,6 +278,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
+
   const petStats = await getPetStats(petInSession.pet_id);
   petInSession.health = petStats.health;
   petInSession.happiness = petStats.happiness;
@@ -291,17 +290,21 @@ app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
   petInSession.name = petInfo.name;
   console.log(petInSession);
 
-  let result = {
-    "health":petInSession.health,
-    "happiness":petInSession.happiness,
-    "fed":petInSession.fed,
-    "hygiene":petInSession.hygiene,
-    "energy":petInSession.energy
-  }
-  res.json(result);
+  res.json(petInSession);
 });
 
-//PET DB QUERIES: Waiting for hosted database
+app.get(Pages.VIEWPET.url + "/updatePetStatsRandomly", async (req, res) => {
+
+  petInSession.updatePetStatsRandomly();
+  res.json(petInSession);
+});
+
+app.post(Pages.VIEWPET.url + "/endSession", async (req, res) => {
+  console.log("Saving session");
+  persistPetStats(petInSession.pet_id);
+
+});
+
 app.post("/addPet", async (req, res) => {
   const externalID = req.body.externalID;
   const userID = req.body.id;
@@ -339,10 +342,6 @@ app.get("/getUserPets/:userId", async (req, res) => {
   res.json(data);
 });
 
-app.get("/getPetStats/:pet_id", async (req, res) => {
-  const pet_id = req.params.pet_id;
-  getPetStats(pet_id);
-});
 
 app.get("/getExternalIDs", async (req, res) => {
   const selectStatement = "SELECT pet_external_id From pets";
@@ -380,10 +379,6 @@ app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-// set routes
-// const router = require("./src/routes/index");
-
-// app.use(Pages.LOGIN.url, router);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -89,6 +89,7 @@ button:hover {
   width: 7rem;
   height: 2.5rem;
   position: absolute;
+  top: 2rem;
 
   font-family: 'Roboto', sans-serif;
   font-size: 2rem;
@@ -106,28 +107,35 @@ button:hover {
 }
 
 #healthLbl {
-  top: 2rem;
   left: 10rem;
 }
 
 #foodLbl {
-  top: 2rem;
   left: 20rem;
 }
 
 #attentionLbl {
-  top: 2rem;
   left: 30rem;
 }
 
 #sickLbl {
-  top: 2rem;
   left: 40rem;
 }
 
 #cleanLbl {
-  top: 2rem;
   left: 50rem;
+}
+
+#nameLbl{
+  right:10rem;
+
+  width: 10rem;
+  height: 3rem;
+  font-size: 2.5rem;
+  /* font-weight: 600; */
+  background-color: var(--background);
+  color: var(--primaryBlue);
+  text-align: center;
 }
 
 .imgIcons {
