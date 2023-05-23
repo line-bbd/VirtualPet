@@ -9,16 +9,7 @@ class Pet {
   //   this.energy = 100;
   // }
 
-  constructor(health,happiness,fed,hygiene,energy){
-    this.health = health;
-    this.happiness = happiness;
-    this.fed = fed;
-    this.hygiene = hygiene;
-    this.energy = energy;
-  }
-
-
-  constructor(health,happiness,fed,hygiene,energy){
+  constructor(health, happiness, fed, hygiene, energy) {
     this.health = health;
     this.happiness = happiness;
     this.fed = fed;

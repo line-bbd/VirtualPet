@@ -8,7 +8,6 @@ const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
 const extAPI = require("./public/js/petfinderAPI");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
-const { get } = require("http");
 
 const app = express();
 app.use(express.json());
@@ -31,7 +30,7 @@ const connectionConfig = {
   ssl: true,
 };
 
-const pet = new Pet();
+const pet = new Pet(100, 100, 100, 100, 100);
 
 // section for db query methods
 const getUsers = async () => {
