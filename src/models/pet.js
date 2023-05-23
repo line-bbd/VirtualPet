@@ -1,22 +1,30 @@
 class Pet {
-  constructor(name,id) {
-    this.id=id;
-    this.type = "Generic Pet";
-    this.name = name;
-    this.health = 100;
-    this.happiness = 100;
-    this.fed = 100;
-    this.hygiene = 100;
-    this.energy = 100;
+  // constructor(name) {
+  //   this.type = "Generic Pet";
+  //   this.name = name;
+  //   this.health = 100;
+  //   this.happiness = 100;
+  //   this.fed = 100;
+  //   this.hygiene = 100;
+  //   this.energy = 100;
+  // }
+
+  constructor(health,happiness,fed,hygiene,energy){
+    this.health = health;
+    this.happiness = happiness;
+    this.fed = fed;
+    this.hygiene = hygiene;
+    this.energy = energy;
   }
 
-  // constructor(health,happiness,fed,hygiene,energy){
-  //   this.health = health;
-  //   this.happiness = happiness;
-  //   this.fed = fed;
-  //   this.hygiene = hygiene;
-  //   this.energy = energy;
-  // }
+
+  constructor(health,happiness,fed,hygiene,energy){
+    this.health = health;
+    this.happiness = happiness;
+    this.fed = fed;
+    this.hygiene = hygiene;
+    this.energy = energy;
+  }
 
   feed() {
     this.fed += 5;
