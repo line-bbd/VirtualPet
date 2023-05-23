@@ -1,36 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
+  <meta charset="utf-8">
+  <title>Login Page</title>
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/Styling.css">
   <script src="js/header.js" defer></script>
 </head>
 
 <body>
-  <header-out-component></header-out-component>
-  <div class="container">
-    <section id="top-bar" class="row">
-      <h1>Log into your account</h1>
-      <form action="/login" method="POST">
-        <input type="text" id="username" name="username" placeholder="Username">
-        <input type="password" id="password" name="password" placeholder="Password">
-        <button type="submit">Login</button>
-      </form>
-      <span id="error-message"></span>
-    </section>
-    <section id="pet-actions" class="row">
-      <h2>Navigate to another page:</h2>
-      <ul>
-        <li><a href="/register">Register</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/adopt">Adopt a pet</a></li>
-        <li><a href="/viewPet">Play</a></li>
-      </ul>
-    </section>
-  </div>
+  <container class="RegisterContainer">
+    <h2>Login</h2>
+    <form action="/login" method="POST">
+      <input type="text" id="username" name="username" placeholder="Username">
+      <input type="password" id="password" name="password" placeholder="Password">
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="/register">Register</a></p>
+
+  </container>
 </body>
 
 </html>
