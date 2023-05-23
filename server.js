@@ -6,11 +6,12 @@ const express = require("express");
 const Pet = require("./src/models/pet");
 const Auth = require("./src/models/auth");
 const Navigator = require("./src/controller/navigator");
-const extAPI = require('./public/js/petfinderAPI');
+const extAPI = require("./public/js/petfinderAPI");
 const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 const { get } = require("http");
 
 const app = express();
+app.use(express.json());
 const port = 3000; // TODO: Remove this later
 const auth = new Auth();
 const navigator = new Navigator();
@@ -92,7 +93,7 @@ const executeQuery = async (query) => {
     client = await pool.connect();
     const result = await client.query(query);
     const data = result.rows;
-    // console.log(data);
+    console.log("d", data.type);
     return data;
   } catch (err) {
     console.error("Error retrieving data:", err);
@@ -107,7 +108,11 @@ const executeQuery = async (query) => {
   }
 };
 
-// api section starts here
+// const updatePetStats = async (pet) => {
+//   await executeQuery(
+//     `UPDATE pet_stats SET health = ${pet.health}, happiness = ${pet.happiness}, energy = ${pet.energy}, fed = ${pet.fed}, hygiene = ${pet.hygiene} WHERE pet_id = ${pet.id}`
+//   );
+// };
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
@@ -208,7 +213,7 @@ app.get(Pages.DASHBOARD.url + "/petList", async (req, res) => {
 });
 
 app.get(Pages.ADOPT.url, (req, res) => {
-  console.log("ADOPT");
+  console.log("ADOPT", pet);
   console.log(auth);
   navigator.navigate(res, "ADOPT");
   if (navigator.destination === Pages.LOGIN) {
@@ -252,7 +257,7 @@ app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
   //   petInSession.feed();
 
   //   res.json(rows[0]);
-    
+
   // })
 
   // pet.feed();
@@ -262,6 +267,7 @@ app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
 
 app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
   petInSession.giveAttention();
+  updatePetStats(petInSession);
   console.log(petInSession);
   res.json(petInSession);
 });
@@ -302,34 +308,109 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-app.get(Pages.VIEWPET.url + "/getPetStats/:pet_id", (req, res) => {
-  // connection.connect();
-  let query = 'SELECT * From Pet_stats WHERE pet_id =?';
-  query = mysql.format(query,req.params.pet_id);
-  connection.query(query, (err, rows, fields) => {
-    if (err) throw err 
-    let result = rows[0];
-    console.log(result);
-    petInSession = new Pet(result.health,result.happiness,result.fed,result.hygiene,result.energy);
+// app.get(Pages.VIEWPET.url + "/getPetStats/:pet_id", (req, res) => {
+//   // connection.connect();
+//   let query = "SELECT * From Pet_stats WHERE pet_id =?";
+//   query = mysql.format(query, req.params.pet_id);
+//   connection.query(query, (err, rows, fields) => {
+//     if (err) throw err;
+//     let result = rows[0];
+//     console.log(result);
+//     petInSession = new Pet(
+//       result.health,
+//       result.happiness,
+//       result.fed,
+//       result.hygiene,
+//       result.energy
+//     );
 
-    res.json(rows[0]);
-    
-  })
+//     res.json(rows[0]);
+//   });
+// });
 
-  // connection.end();
-  // res.json(pet);
+//PET DB QUERIES: Waiting for hosted database
+app.post("/addPet", async (req, res) => {
+  const externalID = req.body.externalID;
+  const userID = req.body.id;
+  const name = req.body.name;
+  const dateCreated = req.body.dateCreated;
+  const type = req.body.type;
+  await executeQuery(
+    `INSERT INTO pets (pet_external_id, user_id, name, date_created, type) VALUES (${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`
+  );
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
-  let results = await petfinderAPI.getDog(req.params.seenExtPetId,1);
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
+  res.json(results);
+});
+
+app.get("/getPet/:petID", async (req, res) => {
+  const petID = req.params.petID;
+
+  const data = JSON.parse(
+    JSON.stringify(
+      await executeQuery(`SELECT * FROM Pets WHERE pet_id = ${petID}`)
+    )
+  );
+  res.json(data);
+});
+
+app.get("/getUserPets/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const data = JSON.parse(
+    JSON.stringify(
+      await executeQuery(`SELECT * FROM Pets WHERE user_id= ${userId}`)
+    )
+  );
+  res.json(data);
+});
+
+app.get("/getPetStats/:pet_id", async (req, res) => {
+  const pet_id = req.params.pet_id;
+  getPetStats(pet_id);
+});
+
+app.get("/getExternalIDs", async (req, res) => {
+  const selectStatement = "SELECT pet_external_id From pets";
+  const data = JSON.parse(JSON.stringify(await executeQuery(selectStatement)));
+  res.json(data);
+});
+// api query to 'select' one of the existing user's pets
+app.post("/selectPet/:pet_id", async (req, res) => {
+  const pet_id = req.params.pet_id;
+  selectPet(pet_id);
+  const petStats = await getPetStats(pet_id);
+  await setPetStats(petStats);
+});
+
+// app.put("/updatePetStats", async (req, res) => {
+//   const petID = req.body.petID;
+//   const health = req.body.health;
+//   const happiness = req.body.happiness;
+//   const energy = req.body.happiness;
+//   const fed = req.body.fed;
+//   const hygiene = req.body.hygiene;
+
+//   await executeQuery(
+//     `UPDATE pet_stats SET health = ${health}, happiness = ${happiness}, energy = ${energy}, fed = ${fed}, hygiene = ${hygiene} WHERE pet_id = ${petID}`
+//   );
+// });
+
+app.get("/getDog/:seenExtPetId", async (req, res) => {
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
 
   res.json(results);
-
 });
 // redirect user to base url if they try to access a route that doesn't exist
 app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
+
+// set routes
+// const router = require("./src/routes/index");
+
+// app.use(Pages.LOGIN.url, router);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

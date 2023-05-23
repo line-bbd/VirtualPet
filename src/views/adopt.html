@@ -1,34 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Adoption</title>
-    <link rel="stylesheet" href="css/main.css" />
-    <script src="js/header.js" defer></script>
-  </head>
+<html lang="en" dir="ltr">
 
-  <head>
-    <meta charset="UTF-8" />
-    <title>Adoption</title>
-    <link rel="stylesheet" href="/public/css/main.css" />
+<head>
+  <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Adoption</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
     <script src="js/header.js" defer></script>
-  </head>
+</head>
 
   <body>
+    <!-- <header-out-component></header-out-component> -->
     <main class="container">
       <section id="top-bar" class="row">
         <h1>Adopt a new pet</h1>
       </section>
-      <section id="pet-actions" class="row">
-        <h2>Navigate to another page:</h2>
-        <ul>
-          <li><a href="/index">Login</a></li>
-          <li><a href="/register">Register</a></li>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/viewPet">Play</a></li>
-        </ul>
+      <hr />
+      <section id="top-bar" class="row">
+        <h1>Basic info</h1>
       </section>
-    </div>
+
+      <article class="con1">
+        <section></section>
+        <form id="adoptForm" method="post">
+          <section class="inputSection">
+            <label for="name" id="nameLbl">Name</label>
+            <input type="text" id="nameInput" name="user_name" readonly />
+          </section>
+
+          <section class="inputSection">
+            <label for="Type" id="typeLbl">Type</label>
+            <input name="user_mail" id="typeInput" readonly/>
+          </section>
+          <section class="inputSection">
+            <label for="type" id="traitLbl">Trait</label>
+            <input name="Trait" id="traitInput" readonly/>
+          </section>
+          <figure class="image">
+            <img src="https://picsum.photos/400" alt="pet picture" />
+          </figure>
+        </form>
+
+        <section class="formButton">
+          <button class="Adoptbutton">
+            Adopt a new pet
+          </button>
+        </section>
+      </article>
+    </main>
+    <script src="js/adopt.js" defer></script>
+    <!-- <script type="module" src="js/petFinderAPI.js"></script> -->
+
   </body>
 </html>
 
