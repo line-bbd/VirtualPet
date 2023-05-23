@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     let pet_id = '4';//TODO need to get selected pet id here
-    const response = await fetch("/viewPet/getPetStats/"+pet_id);
+    const response = await fetch("/viewPet/getPetStats");
     if (!response.ok) {
       throw new Error("Failed to fetch pet stats");
     }

@@ -234,7 +234,6 @@ app.get(Pages.ADOPT.url, (req, res) => {
 });
 
 app.get(Pages.VIEWPET.url, async (req, res) => {
-
   navigator.navigate(res, "VIEWPET");
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
@@ -244,21 +243,8 @@ app.get(Pages.VIEWPET.url, async (req, res) => {
 
 });
 
-app.post(Pages.VIEWPET.url+"/setPetInfo/:pet_id", async (req, res) => {
-
-  const petStats = await getPetStats(req.params.pet_id);
-  petInSession.pet_id = petStats.pet_id;
-  petInSession.health = petStats.health;
-  petInSession.happiness = petStats.happiness;
-  petInSession.fed = petStats.fed;
-  petInSession.hygiene = petStats.hygiene;
-  petInSession.energy = petStats.energy;
-
-  const petInfo = await getPetInfo(req.params.pet_id);
-  petInSession.name = petInfo.name;
-  console.log("PIS",petInSession);
-
-
+app.post(Pages.VIEWPET.url+"/setPetID/:pet_id", async (req, res) => {
+  petInSession.pet_id = req.params.pet_id;
 });
 
 app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
@@ -293,25 +279,27 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-// app.get(Pages.VIEWPET.url + "/getPetStats/:pet_id", (req, res) => {
-//   // connection.connect();
-//   let query = "SELECT * From Pet_stats WHERE pet_id =?";
-//   query = mysql.format(query, req.params.pet_id);
-//   connection.query(query, (err, rows, fields) => {
-//     if (err) throw err;
-//     let result = rows[0];
-//     console.log(result);
-//     petInSession = new Pet(
-//       result.health,
-//       result.happiness,
-//       result.fed,
-//       result.hygiene,
-//       result.energy
-//     );
+app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
+  const petStats = await getPetStats(petInSession.pet_id);
+  petInSession.health = petStats.health;
+  petInSession.happiness = petStats.happiness;
+  petInSession.fed = petStats.fed;
+  petInSession.hygiene = petStats.hygiene;
+  petInSession.energy = petStats.energy;
 
-//     res.json(rows[0]);
-//   });
-// });
+  const petInfo = await getPetInfo(petInSession.pet_id);
+  petInSession.name = petInfo.name;
+  console.log(petInSession);
+
+  let result = {
+    "health":petInSession.health,
+    "happiness":petInSession.happiness,
+    "fed":petInSession.fed,
+    "hygiene":petInSession.hygiene,
+    "energy":petInSession.energy
+  }
+  res.json(result);
+});
 
 //PET DB QUERIES: Waiting for hosted database
 app.post("/addPet", async (req, res) => {

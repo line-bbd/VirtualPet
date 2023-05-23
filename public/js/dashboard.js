@@ -24,17 +24,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   let btn = document.getElementById("playBtn");
-  btn.addEventListener("click", async function() {
-  try {
-    let pet_id = '4';//TODO need to get selected pet id here
-    const response = await fetch("/viewPet/setPetInfo/"+pet_id,{ method: "POST" });
-    if (!response.ok) {
-      throw new Error("Failed to show pet");
+  btn.addEventListener("click", function() {
+    try {
+      let pet_id = '4';//TODO need to get selected pet id here
+      fetch("/viewPet/setPetID/"+pet_id,{ method: "POST" });
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-});
+  });
 });
 
 async function selectPet() {
