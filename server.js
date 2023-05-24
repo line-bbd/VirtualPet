@@ -16,6 +16,8 @@ const auth = new Auth();
 const navigator = new Navigator();
 const petfinderAPI = new extAPI();
 
+let petInSession = new Pet();
+
 //TODO: the logic is as follows:
 //When the user enters the play page the pet is initialized
 //All the interactions are done on this pet model(feed,walk etc)
@@ -29,8 +31,6 @@ const connectionConfig = {
   port: process.env.DB_PORT,
   ssl: true,
 };
-
-const pet = new Pet(100, 100, 100, 100, 100);
 
 // section for db query methods
 const getUsers = async () => {
@@ -60,8 +60,8 @@ const selectPet = async (pet_id) => {
     JSON.stringify((await executeQuery(selectPetQuery))[0])
   );
   console.log(data);
-  pet.setPetName(data.name);
-  pet.setPetType(data.type);
+  petInSession.setPetName(data.name);
+  petInSession.setPetType(data.type);
 };
 
 const getPetStats = async (pet_id) => {
@@ -70,18 +70,30 @@ const getPetStats = async (pet_id) => {
   return data;
 };
 
+const getPetInfo = async (pet_id) => {
+  const petQuery = `SELECT * FROM pets WHERE pet_id = ${pet_id};`;
+  const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
+  return data;
+};
+
+const persistPetStats = async (pet_id) => {
+  const petQuery = `UPDATE pet_stats SET health = ${petInSession.health},
+  happiness = ${petInSession.happiness},
+  energy = ${petInSession.energy},
+  fed = ${petInSession.fed},
+  hygiene = ${petInSession.hygiene}
+  WHERE pet_id = ${pet_id};`;
+  executeQuery(petQuery);
+  // const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
+  // return data;
+};
+
 // section ends here
 
 const setPetStats = async (data) => {
-  pet.setPetStats(
-    data.health,
-    data.happiness,
-    data.fed,
-    data.hygiene,
-    data.energy
-  );
+  petInSession.setPetStats(data);
 
-  console.log(pet);
+  console.log(petInSession);
 };
 
 const executeQuery = async (query) => {
@@ -221,46 +233,24 @@ app.get(Pages.ADOPT.url, (req, res) => {
   }
 });
 
-app.get(Pages.VIEWPET.url, (req, res) => {
-  console.log("PLAY");
-  console.log(auth);
-
+app.get(Pages.VIEWPET.url, async (req, res) => {
   navigator.navigate(res, "VIEWPET");
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
   } else {
     res.sendFile(__dirname + navigator.destination.dir);
   }
+
 });
 
-// app.post(Pages.VIEWPET.url, (req, res) => {
-//   // feed endpoint
-//   const { feed } = req.query;
-//   if (feed === "true") {
-//     pet.feed();
-//     console.log(pet);
-//   }
-// });
+app.post(Pages.VIEWPET.url+"/setPetID/:pet_id", async (req, res) => {
+  petInSession.pet_id = req.params.pet_id;
+});
 
 app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
   petInSession.feed();
   console.log(petInSession);
   res.json(petInSession);
-  // connection.connect();
-  // let query = 'Update pet_stats set hunger = ?, bordem = ?, health = ?, thirst = ?, hygiene = ? where pet_id = ?';
-  // query = mysql.format(query,req.params.pet_id);
-
-  // connection.query(query, (err, rows, fields) => {
-  //   if (err) throw err
-  //   petInSession.feed();
-
-  //   res.json(rows[0]);
-
-  // })
-
-  // pet.feed();
-  // console.log(pet);
-  // res.json(pet);
 });
 
 app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
@@ -282,49 +272,34 @@ app.post(Pages.VIEWPET.url + "/bath", (req, res) => {
   res.json(petInSession);
 });
 
-// app.post(Pages.VIEWPET.url + "/treat", (req, res) => {
-//   pet.giveTreat();
-//   console.log(pet);
-//   res.json(pet);
-// });
-
-// app.post(Pages.VIEWPET.url + "/toy", (req, res) => {
-//   pet.giveToy();
-//   console.log(pet);
-//   res.json(pet);
-// });
-
-// app.post(Pages.VIEWPET.url + "/sleep", (req, res) => {
-//   pet.sleep();
-//   console.log(pet);
-//   res.json(pet);
-// });
-
 app.get("/logout", (req, res) => {
   auth.logout();
   navigator.setAuth(auth);
+  res.json(petInSession);
   res.redirect(Pages.LOGIN.url);
 });
 
-// app.get(Pages.VIEWPET.url + "/getPetStats/:pet_id", (req, res) => {
-//   // connection.connect();
-//   let query = "SELECT * From Pet_stats WHERE pet_id =?";
-//   query = mysql.format(query, req.params.pet_id);
-//   connection.query(query, (err, rows, fields) => {
-//     if (err) throw err;
-//     let result = rows[0];
-//     console.log(result);
-//     petInSession = new Pet(
-//       result.health,
-//       result.happiness,
-//       result.fed,
-//       result.hygiene,
-//       result.energy
-//     );
+app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
+  const petStats = await getPetStats(petInSession.pet_id);
+  petInSession.health = petStats.health;
+  petInSession.happiness = petStats.happiness;
+  petInSession.fed = petStats.fed;
+  petInSession.hygiene = petStats.hygiene;
+  petInSession.energy = petStats.energy;
 
-//     res.json(rows[0]);
-//   });
-// });
+  const petInfo = await getPetInfo(petInSession.pet_id);
+  petInSession.name = petInfo.name;
+  console.log(petInSession);
+
+  let result = {
+    "health":petInSession.health,
+    "happiness":petInSession.happiness,
+    "fed":petInSession.fed,
+    "hygiene":petInSession.hygiene,
+    "energy":petInSession.energy
+  }
+  res.json(result);
+});
 
 //PET DB QUERIES: Waiting for hosted database
 app.post("/addPet", async (req, res) => {
