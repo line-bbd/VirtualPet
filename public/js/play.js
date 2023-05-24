@@ -1,4 +1,5 @@
 let timerFunc;
+const timerIntervalMs = 10000;
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -35,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   timerFunc = setInterval(async function() {
-    console.log("run");
     try {
       const response = await fetch("/viewPet/updatePetStatsRandomly");
       if (!response.ok) {
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error(error);
     }
-  }, 5000);
+  }, timerIntervalMs);
 
 });
 

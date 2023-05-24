@@ -60,6 +60,7 @@ class Pet {
     this.hygiene = Math.max(this.hygiene-this.getRandomValue(min,max),0);
     this.energy = Math.max(this.energy-this.getRandomValue(min,max),0);
 
+
   }
 
   setPetStats(data){
