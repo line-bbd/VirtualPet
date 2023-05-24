@@ -41,7 +41,7 @@ body {
   position: relative;
   left: 1.25rem;
   font-size: 1.5rem;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   color: azure;
 }
 
@@ -90,7 +90,7 @@ button:hover {
   height: 2.5rem;
   position: absolute;
 
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 2rem;
   font-weight: 500;
   letter-spacing: 0.05rem;
@@ -186,4 +186,104 @@ button:hover {
   position: absolute;
   bottom: 10rem;
   right: 5rem;
+}
+
+body {
+  margin: 0;
+  padding-bottom: 100px;
+  background-color: var(--background);
+  font-family: "Inter";
+  color: white;
+}
+@media (min-width: 1000px) {
+  .con1 {
+    display: grid;
+
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto;
+  }
+  .Adoptbutton {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 30px;
+  }
+}
+#adoptForm {
+  width: 75%;
+  height: 100%;
+  background-color: rgba(52, 152, 219, 0.5);
+
+  margin: 0 auto;
+  padding:0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+#top-bar h1 {
+  font-size: 27px;
+}
+
+.input label {
+  font-size: 36px;
+  display: inline-block;
+}
+
+.container {
+  text-align: center;
+  position: relative;
+  justify-content: center;
+}
+.inputSection {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 20px 0 20px;
+}
+
+.inputSection input {
+  display: inline-block;
+
+  width: 50%;
+  height: 35px;
+  border-radius: 5px;
+  border: none;
+}
+
+.Adoptbutton {
+  margin-top: 10px;
+  border-radius: 5px;
+  border: none;
+  height: 64px;
+  width: 280px;
+  color: white;
+  background-color: var(--primaryOrange);
+}
+.image {
+  position: relative;
+  margin:0;
+padding: 20px 10px;
+
+box-sizing: border-box; 
+}
+
+.image img {
+
+width: 90%;
+  height: inherit;
+}
+
+#RefreshButton {
+  display: flex;
+max-width: fit-content;
+  justify-content: left;
+  padding: 10px;
+  border: 0px;
+
+}
+
+#RefreshButton:active {
+  color: #00000058;
+}
+#RefreshButton:hover {
+  cursor: pointer;
 }

@@ -304,13 +304,14 @@ app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
 //PET DB QUERIES: Waiting for hosted database
 app.post("/addPet", async (req, res) => {
   const externalID = req.body.externalID;
-  const userID = req.body.id;
+  const userID = auth.userID;
   const name = req.body.name;
   const dateCreated = req.body.dateCreated;
   const type = req.body.type;
-  await executeQuery(
-    `INSERT INTO pets (pet_external_id, user_id, name, date_created, type) VALUES (${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`
-  );
+
+  const insertStatement = `INSERT INTO pets (pet_external_id, user_id, name, date_created, type) VALUES (${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`;
+  await executeQuery(insertStatement)
+
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {

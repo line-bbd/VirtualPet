@@ -11,7 +11,7 @@ class petfinderAPI{
         method: 'POST',
         body: params,
         headers: {
-          'Connection': 'keep-alive'
+
         }
       });
       const myJson = response.json();
@@ -50,7 +50,7 @@ class petfinderAPI{
     const response = await fetch(req, {
     method: 'GET',
     headers: {
-        'Connection': 'keep-alive',
+       
         'Authorization': `Bearer ${results.access_token}`
     }
     });
