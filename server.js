@@ -17,11 +17,8 @@ const navigator = new Navigator();
 const petfinderAPI = new extAPI();
 
 let petInSession = new Pet();
-
-//TODO: the logic is as follows:
-//When the user enters the play page the pet is initialized
-//All the interactions are done on this pet model(feed,walk etc)
-//The changes are then persisted when they logout, exit etc
+let userIDInSession;
+let timeIntevalInMinutes = 1;
 
 const connectionConfig = {
   user: process.env.DB_USER,
@@ -42,6 +39,16 @@ const addUser = async (username, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const addUserQuery = `INSERT INTO users (username, password) VALUES ('${username}', '${hashedPassword}');`;
   await executeQuery(addUserQuery);
+};
+
+const getLastSeen = async () => {
+  const getUserQuery = `SELECT last_seen FROM users WHERE user_id = ${auth.userID};`;
+  return await executeQuery(getUserQuery);
+};
+
+const updateLastSeen = async () => {
+  const updateUserQuery = `UPDATE users set last_seen = now() where user_id = ${userIDInSession};`;
+  await executeQuery(updateUserQuery);
 };
 
 const deletePet = async (pet_id) => {
@@ -76,16 +83,14 @@ const getPetInfo = async (pet_id) => {
   return data;
 };
 
-const persistPetStats = async (pet_id) => {
+const persistPetStats = async (d) => {
   const petQuery = `UPDATE pet_stats SET health = ${petInSession.health},
   happiness = ${petInSession.happiness},
   energy = ${petInSession.energy},
   fed = ${petInSession.fed},
   hygiene = ${petInSession.hygiene}
-  WHERE pet_id = ${pet_id};`;
+  WHERE pet_id = ${petInSession.pet_id};`;
   executeQuery(petQuery);
-  // const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
-  // return data;
 };
 
 // section ends here
@@ -104,7 +109,6 @@ const executeQuery = async (query) => {
     client = await pool.connect();
     const result = await client.query(query);
     const data = result.rows;
-    console.log("d", data.type);
     return data;
   } catch (err) {
     console.error("Error retrieving data:", err);
@@ -119,11 +123,6 @@ const executeQuery = async (query) => {
   }
 };
 
-// const updatePetStats = async (pet) => {
-//   await executeQuery(
-//     `UPDATE pet_stats SET health = ${pet.health}, happiness = ${pet.happiness}, energy = ${pet.energy}, fed = ${pet.fed}, hygiene = ${pet.hygiene} WHERE pet_id = ${pet.id}`
-//   );
-// };
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
@@ -245,6 +244,7 @@ app.get(Pages.VIEWPET.url, async (req, res) => {
 
 app.post(Pages.VIEWPET.url+"/setPetID/:pet_id", async (req, res) => {
   petInSession.pet_id = req.params.pet_id;
+  userIDInSession = auth.userID;
 });
 
 app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
@@ -255,7 +255,6 @@ app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
 
 app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
   petInSession.giveAttention();
-  updatePetStats(petInSession);
   console.log(petInSession);
   res.json(petInSession);
 });
@@ -280,6 +279,17 @@ app.get("/logout", (req, res) => {
 });
 
 app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
+
+  const petInfo = await getPetInfo(petInSession.pet_id);
+  petInSession.name = petInfo.name;
+
+  let currTime = new Date();
+  let lastSeen = await getLastSeen();
+  let lastSeenTime = new Date(lastSeen[0].last_seen);
+  let timeDiffMinutes = (currTime.getTime() - lastSeenTime.getTime())/60000;
+
+  let timeIntervalsPassed = Math.floor(timeDiffMinutes/timeIntevalInMinutes);
+
   const petStats = await getPetStats(petInSession.pet_id);
   petInSession.health = petStats.health;
   petInSession.happiness = petStats.happiness;
@@ -287,21 +297,28 @@ app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
   petInSession.hygiene = petStats.hygiene;
   petInSession.energy = petStats.energy;
 
-  const petInfo = await getPetInfo(petInSession.pet_id);
-  petInSession.name = petInfo.name;
+  for (let index = 0; index < timeIntervalsPassed; index++) {
+    petInSession.updatePetStatsRandomly();
+    
+  }
+
   console.log(petInSession);
 
-  let result = {
-    "health":petInSession.health,
-    "happiness":petInSession.happiness,
-    "fed":petInSession.fed,
-    "hygiene":petInSession.hygiene,
-    "energy":petInSession.energy
-  }
-  res.json(result);
+  res.json(petInSession);
 });
 
-//PET DB QUERIES: Waiting for hosted database
+app.get(Pages.VIEWPET.url + "/updatePetStatsRandomly", async (req, res) => {
+
+  petInSession.updatePetStatsRandomly();
+  res.json(petInSession);
+});
+
+app.post(Pages.VIEWPET.url + "/endSession", async (req, res) => {
+  console.log("Saving session");
+  persistPetStats();
+  updateLastSeen();
+});
+
 app.post("/addPet", async (req, res) => {
   const externalID = req.body.externalID;
   const userID = auth.userID;
@@ -340,10 +357,6 @@ app.get("/getUserPets/:userId", async (req, res) => {
   res.json(data);
 });
 
-app.get("/getPetStats/:pet_id", async (req, res) => {
-  const pet_id = req.params.pet_id;
-  getPetStats(pet_id);
-});
 
 app.get("/getExternalIDs", async (req, res) => {
   const selectStatement = "SELECT pet_external_id From pets";
@@ -381,10 +394,6 @@ app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
-// set routes
-// const router = require("./src/routes/index");
-
-// app.use(Pages.LOGIN.url, router);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

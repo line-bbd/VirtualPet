@@ -1,6 +1,8 @@
+let timerFunc;
+const timerIntervalMs = 10000;
+
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    let pet_id = '4';//TODO need to get selected pet id here
     const response = await fetch("/viewPet/getPetStats");
     if (!response.ok) {
       throw new Error("Failed to fetch pet stats");
@@ -26,16 +28,34 @@ document.addEventListener("DOMContentLoaded", () => {
   attentionButton.addEventListener("click", handleAttentionAction);
   washButton.addEventListener("click", handleWashAction);
   medicineButton.addEventListener("click", handleMedicineAction);
-  backBtn.addEventListener("click", handleBackAction);
+  // backBtn.addEventListener("click", handleBackAction);
+
+  //handles the case the browser is close
+  window.onbeforeunload = function (event) {
+    handleBackAction();
+  };
+
+  timerFunc = setInterval(async function() {
+    try {
+      const response = await fetch("/viewPet/updatePetStatsRandomly");
+      if (!response.ok) {
+        throw new Error("Failed to change pet stats");
+      }
+      const petStats = await response.json();
+      // Update the DOM with the pet stats
+      updatePetStats(petStats);
+    } catch (error) {
+      console.error(error);
+    }
+  }, timerIntervalMs);
 
 });
 
 async function handleBackAction()
 {
   try {
-    let pet_id = '4';//TODO need to get selected pet id here
-
-    const response = await fetch("/viewPet/endSession/"+pet_id, { method: "POST" });
+    const response = await fetch("/viewPet/endSession", { method: "POST" });
+    clearInterval(timerFunc);
     if (!response.ok) {
     throw new Error("Failed save state of pet");
   }
@@ -44,8 +64,6 @@ async function handleBackAction()
   }
 
 }
-
-
 
 async function handleFeedAction() {
   try {
@@ -106,14 +124,13 @@ async function handleMedicineAction() {
   }
 }
 
-
-
 function updatePetStats(petStats) {
-
-  
-  document.getElementById("healthLbl").childNodes[2].textContent = " "+petStats.health;//TODO: This needs to change to a happiness label
+  document.getElementById("healthLbl").childNodes[2].textContent = " "+petStats.health;
   document.getElementById("foodLbl").childNodes[2].textContent = " "+petStats.fed;
   document.getElementById("attentionLbl").childNodes[2].textContent = " "+petStats.energy;
   document.getElementById("sickLbl").childNodes[2].textContent = " "+petStats.happiness;
   document.getElementById("cleanLbl").childNodes[2].textContent = " "+petStats.hygiene;
+
+  console.log(petStats.name);
+  document.getElementById("nameLbl").textContent = petStats.name;
 }
