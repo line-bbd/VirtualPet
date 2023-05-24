@@ -46,6 +46,23 @@ class Pet {
     this.message = "You gave your pet a bath!";
   }
 
+  getRandomValue(min,max){
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  updatePetStatsRandomly()
+  {
+    let min = 0;
+    let max = 5;
+    this.health = Math.max(this.health-this.getRandomValue(min,max),0);
+    this.happiness = Math.max(this.happiness-this.getRandomValue(min,max),0);
+    this.fed = Math.max(this.fed-this.getRandomValue(min,max),0);
+    this.hygiene = Math.max(this.hygiene-this.getRandomValue(min,max),0);
+    this.energy = Math.max(this.energy-this.getRandomValue(min,max),0);
+
+
+  }
+
   setPetStats(data){
     this.health = data.health,
     this.happiness = data.happiness,
@@ -69,7 +86,7 @@ class Pet {
 
   // sleep() {
   //   this.energy += 20;
-  //   this.happiness += 10;
+  //   this.happiness += max;
   //   this.hunger -= 5;
   //   this.message = "You put your pet to bed!";
   // }
