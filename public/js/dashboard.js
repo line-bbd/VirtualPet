@@ -1,11 +1,3 @@
-// document.addEventListener("DOMContentLoaded", () => {
-//   // Get the action buttons
-//   const adoptButton = document.getElementById("selectBtn");
-
-//   // Add event listeners to the buttons
-//   adoptButton.addEventListener("click", selectPet);
-// });
-
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     // get pet list for user
@@ -18,16 +10,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.error(error);
   }
-
- 
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   let btn = document.getElementById("playBtn");
-  btn.addEventListener("click", function() {
+  btn.addEventListener("click", function () {
     try {
-      let pet_id = '4';//TODO need to get selected pet id here
-      fetch("/viewPet/setPetID/"+pet_id,{ method: "POST" });
+      let pet_id = "4"; //TODO need to get selected pet id here
+      fetch("/viewPet/setPetID/" + pet_id, { method: "POST" });
     } catch (error) {
       console.error(error);
     }
@@ -36,10 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function selectPet() {
   try {
-    let pet_id = '4';
-    const response = await fetch('/selectPet/' + pet_id, { method: 'POST' });
+    let pet_id = "4";
+    const response = await fetch("/selectPet/" + pet_id, { method: "POST" });
     if (!response.ok) {
-      throw new Error('Failed to select pet');
+      throw new Error("Failed to select pet");
     }
     const success = await response.json();
   } catch (error) {
@@ -48,8 +38,8 @@ async function selectPet() {
 }
 
 function buildCards(userUserPets) {
-  const cardLayout = document.querySelector('#cardLayout');
-  let htmlString = '';
+  const cardLayout = document.querySelector("#cardLayout");
+  let htmlString = "";
   let petCounter = 0;
   for (let pet of userUserPets) {
     htmlString += `<section id="petcard" class="card">
@@ -84,12 +74,12 @@ function buildCards(userUserPets) {
 }
 
 async function getUserPets() {
-  document.addEventListener('DOMContentLoaded', async () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     try {
       // get pet list for user
-      const response = await fetch('/dashboard/petList', { method: 'GET' });
+      const response = await fetch("/dashboard/petList", { method: "GET" });
       if (!response.ok) {
-        throw new Error('Failed to get pet list');
+        throw new Error("Failed to get pet list");
       }
       const petList = await response.json();
       buildCards(petList);

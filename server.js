@@ -1,5 +1,6 @@
 require("dotenv").config();
 const path = require("path");
+const bodyParser = require("body-parser");
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const express = require("express");
@@ -11,7 +12,12 @@ const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
 
 const app = express();
 app.use(express.json());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 const port = 3000; // TODO: Remove this later
+
 const auth = new Auth();
 const navigator = new Navigator();
 const petfinderAPI = new extAPI();
@@ -29,7 +35,6 @@ const connectionConfig = {
   ssl: true,
 };
 
-// section for db query methods
 const getUsers = async () => {
   const usersQuery = "SELECT * FROM users;";
   return await executeQuery(usersQuery);
@@ -93,8 +98,6 @@ const persistPetStats = async (d) => {
   executeQuery(petQuery);
 };
 
-// section ends here
-
 const setPetStats = async (data) => {
   petInSession.setPetStats(data);
 
@@ -122,7 +125,6 @@ const executeQuery = async (query) => {
     }
   }
 };
-
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
@@ -239,10 +241,9 @@ app.get(Pages.VIEWPET.url, async (req, res) => {
   } else {
     res.sendFile(__dirname + navigator.destination.dir);
   }
-
 });
 
-app.post(Pages.VIEWPET.url+"/setPetID/:pet_id", async (req, res) => {
+app.post(Pages.VIEWPET.url + "/setPetID/:pet_id", async (req, res) => {
   petInSession.pet_id = req.params.pet_id;
   userIDInSession = auth.userID;
 });
@@ -279,16 +280,15 @@ app.get("/logout", (req, res) => {
 });
 
 app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
-
   const petInfo = await getPetInfo(petInSession.pet_id);
   petInSession.name = petInfo.name;
 
   let currTime = new Date();
   let lastSeen = await getLastSeen();
   let lastSeenTime = new Date(lastSeen[0].last_seen);
-  let timeDiffMinutes = (currTime.getTime() - lastSeenTime.getTime())/60000;
+  let timeDiffMinutes = (currTime.getTime() - lastSeenTime.getTime()) / 60000;
 
-  let timeIntervalsPassed = Math.floor(timeDiffMinutes/timeIntevalInMinutes);
+  let timeIntervalsPassed = Math.floor(timeDiffMinutes / timeIntevalInMinutes);
 
   const petStats = await getPetStats(petInSession.pet_id);
   petInSession.health = petStats.health;
@@ -299,7 +299,6 @@ app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
 
   for (let index = 0; index < timeIntervalsPassed; index++) {
     petInSession.updatePetStatsRandomly();
-    
   }
 
   console.log(petInSession);
@@ -308,7 +307,6 @@ app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
 });
 
 app.get(Pages.VIEWPET.url + "/updatePetStatsRandomly", async (req, res) => {
-
   petInSession.updatePetStatsRandomly();
   res.json(petInSession);
 });
@@ -327,8 +325,7 @@ app.post("/addPet", async (req, res) => {
   const type = req.body.type;
 
   const insertStatement = `INSERT INTO pets (pet_external_id, user_id, name, date_created, type) VALUES (${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`;
-  await executeQuery(insertStatement)
-
+  await executeQuery(insertStatement);
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
@@ -357,7 +354,6 @@ app.get("/getUserPets/:userId", async (req, res) => {
   res.json(data);
 });
 
-
 app.get("/getExternalIDs", async (req, res) => {
   const selectStatement = "SELECT pet_external_id From pets";
   const data = JSON.parse(JSON.stringify(await executeQuery(selectStatement)));
@@ -371,29 +367,16 @@ app.post("/selectPet/:pet_id", async (req, res) => {
   await setPetStats(petStats);
 });
 
-// app.put("/updatePetStats", async (req, res) => {
-//   const petID = req.body.petID;
-//   const health = req.body.health;
-//   const happiness = req.body.happiness;
-//   const energy = req.body.happiness;
-//   const fed = req.body.fed;
-//   const hygiene = req.body.hygiene;
-
-//   await executeQuery(
-//     `UPDATE pet_stats SET health = ${health}, happiness = ${happiness}, energy = ${energy}, fed = ${fed}, hygiene = ${hygiene} WHERE pet_id = ${petID}`
-//   );
-// });
-
 app.get("/getDog/:seenExtPetId", async (req, res) => {
   let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
 
   res.json(results);
 });
+
 // redirect user to base url if they try to access a route that doesn't exist
 app.get("*", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   attentionButton.addEventListener("click", handleAttentionAction);
   washButton.addEventListener("click", handleWashAction);
   medicineButton.addEventListener("click", handleMedicineAction);
+  backBtn.addEventListener("click", handleBackAction);
   // backBtn.addEventListener("click", handleBackAction);
 
   //handles the case the browser is close
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     handleBackAction();
   };
 
-  timerFunc = setInterval(async function() {
+  timerFunc = setInterval(async function () {
     try {
       const response = await fetch("/viewPet/updatePetStatsRandomly");
       if (!response.ok) {
@@ -48,21 +49,18 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(error);
     }
   }, timerIntervalMs);
-
 });
 
-async function handleBackAction()
-{
+async function handleBackAction() {
   try {
     const response = await fetch("/viewPet/endSession", { method: "POST" });
     clearInterval(timerFunc);
     if (!response.ok) {
-    throw new Error("Failed save state of pet");
-  }
+      throw new Error("Failed save state of pet");
+    }
   } catch (error) {
     console.error(error);
   }
-
 }
 
 async function handleFeedAction() {
@@ -72,7 +70,6 @@ async function handleFeedAction() {
       throw new Error("Failed to feed the pet");
     }
     const updatedPetStats = await response.json();
-    // Update the DOM with the updated pet stats
     updatePetStats(updatedPetStats);
   } catch (error) {
     console.error(error);
@@ -87,7 +84,6 @@ async function handleWashAction() {
     }
     const updatedPetStats = await response.json();
 
-    // Update the DOM with the updated pet stats
     updatePetStats(updatedPetStats);
   } catch (error) {
     console.error(error);
@@ -102,7 +98,6 @@ async function handleAttentionAction() {
     }
     const updatedPetStats = await response.json();
 
-    // Update the DOM with the updated pet stats
     updatePetStats(updatedPetStats);
   } catch (error) {
     console.error(error);
@@ -117,7 +112,6 @@ async function handleMedicineAction() {
     }
     const updatedPetStats = await response.json();
 
-    // Update the DOM with the updated pet stats
     updatePetStats(updatedPetStats);
   } catch (error) {
     console.error(error);
@@ -125,11 +119,16 @@ async function handleMedicineAction() {
 }
 
 function updatePetStats(petStats) {
-  document.getElementById("healthLbl").childNodes[2].textContent = " "+petStats.health;
-  document.getElementById("foodLbl").childNodes[2].textContent = " "+petStats.fed;
-  document.getElementById("attentionLbl").childNodes[2].textContent = " "+petStats.energy;
-  document.getElementById("sickLbl").childNodes[2].textContent = " "+petStats.happiness;
-  document.getElementById("cleanLbl").childNodes[2].textContent = " "+petStats.hygiene;
+  document.getElementById("healthLbl").childNodes[2].textContent =
+    " " + petStats.health;
+  document.getElementById("foodLbl").childNodes[2].textContent =
+    " " + petStats.fed;
+  document.getElementById("attentionLbl").childNodes[2].textContent =
+    " " + petStats.energy;
+  document.getElementById("sickLbl").childNodes[2].textContent =
+    " " + petStats.happiness;
+  document.getElementById("cleanLbl").childNodes[2].textContent =
+    " " + petStats.hygiene;
 
   console.log(petStats.name);
   document.getElementById("nameLbl").textContent = petStats.name;
