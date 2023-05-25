@@ -5,9 +5,9 @@ async function buildCards(userUserPets) {
   let htmlString = '';
   let petCounter = 1;
   for (let pet of userUserPets) {
-    const dog = await fetchDog(pet.pet_external_id);
+    // const dog = await fetchDog(pet.pet_external_id);
     htmlString += `<section id="petcard" class="card">
-    <img class="card-img" src="${dog.photos[0].medium}" />
+    <img class="card-img" src="img/PetLogo.png" />
     <section class="lower-card">
       <h2 class="pet-name">${pet.name}</h2>
       <section class="card-buttons"><button class="card-button" id="deletebutton${petCounter}">
