@@ -10,7 +10,7 @@ class Navigator {
     this.auth = auth;
   }
 
-  navigate(res, name) {
+  navigate(name) {
     const page = Pages[name];
     if (page.protected && !this.auth.isAuthenticated()) {
       this.destination = Pages.LOGIN;

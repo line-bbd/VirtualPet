@@ -24,7 +24,7 @@ const petfinderAPI = new extAPI();
 
 let petInSession = new Pet();
 let userIDInSession;
-let timeIntevalInMinutes = 1;
+let timeIntervalInMinutes = 1;
 
 const connectionConfig = {
   user: process.env.DB_USER,
@@ -142,7 +142,7 @@ app.use((req, res, next) => {
 
 // set views
 app.get(Pages.LOGIN.url, (req, res) => {
-  navigator.navigate(res, "LOGIN");
+  navigator.navigate("LOGIN");
   res.sendFile(__dirname + navigator.destination.dir);
 });
 
@@ -169,7 +169,7 @@ app.post(Pages.LOGIN.url, async (req, res) => {
 });
 
 app.get(Pages.REGISTER.url, (req, res) => {
-  navigator.navigate(res, "REGISTER");
+  navigator.navigate("REGISTER");
   res.sendFile(__dirname + navigator.destination.dir);
 });
 
@@ -200,7 +200,7 @@ app.post(Pages.REGISTER.url, async (req, res) => {
 app.get(Pages.DASHBOARD.url, (req, res) => {
   console.log("DASHBOARD");
   console.log(auth);
-  navigator.navigate(res, "DASHBOARD");
+  navigator.navigate("DASHBOARD");
 
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
@@ -216,7 +216,7 @@ app.get(Pages.DASHBOARD.url + "/petList", async (req, res) => {
 });
 
 app.get(Pages.ADOPT.url, (req, res) => {
-  navigator.navigate(res, "ADOPT");
+  navigator.navigate("ADOPT");
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
   } else {
@@ -225,7 +225,7 @@ app.get(Pages.ADOPT.url, (req, res) => {
 });
 
 app.get(Pages.VIEWPET.url, async (req, res) => {
-  navigator.navigate(res, "VIEWPET");
+  navigator.navigate("VIEWPET");
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
   } else {
@@ -277,7 +277,7 @@ app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
   let lastSeenTime = new Date(lastSeen[0].last_seen);
   let timeDiffMinutes = (currTime.getTime() - lastSeenTime.getTime()) / 60000;
 
-  let timeIntervalsPassed = Math.floor(timeDiffMinutes / timeIntevalInMinutes);
+  let timeIntervalsPassed = Math.floor(timeDiffMinutes / timeIntervalInMinutes);
 
   const petStats = await getPetStats(petInSession.pet_id);
   petInSession.health = petStats.health;
@@ -318,7 +318,7 @@ app.post("/addPet", async (req, res) => {
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
-  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1,);
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
   res.json(results);
 });
 
