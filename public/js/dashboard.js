@@ -159,24 +159,24 @@ function handleViewPet(pet) {
 }
 
 async function handlePetDeletion(pet) {
-  // try {
-  //   const response = await fetch('/dashboard/deletePet', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       petId: pet.pet_id,
-  //     }),
-  //   });
-  //   console.log(response);
-  //   if (!response.ok) {
-  //     throw new Error('Failed to delete pet');
-  //   }
-  //   const success = response.json();
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  try {
+    const response = await fetch('/dashboard/deletePet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        petId: pet.pet_id,
+      }),
+    });
+    console.log(response);
+    if (!response.ok) {
+      throw new Error('Failed to delete pet');
+    }
+    const success = response.json();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function fetchDog(seenExtPetId) {
