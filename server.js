@@ -308,8 +308,12 @@ app.get(Pages.VIEWPET.url + '/updatePetStatsRandomly', async (req, res) => {
 
 app.post(Pages.VIEWPET.url + '/endSession', async (req, res) => {
   console.log('Saving session');
-  persistPetStats();
-  updateLastSeen();
+  if (!!petInSession.pet_id) {
+    persistPetStats();
+  }
+  if (!!userIDInSession) {
+    updateLastSeen();
+  }
 });
 
 app.post('/addPet', async (req, res) => {
