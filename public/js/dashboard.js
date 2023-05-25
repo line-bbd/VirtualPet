@@ -1,12 +1,13 @@
 getUserPets();
 
-function buildCards(userUserPets) {
+async function buildCards(userUserPets) {
   const cardLayout = document.querySelector('#cardLayout');
   let htmlString = '';
   let petCounter = 1;
   for (let pet of userUserPets) {
+    const dog = await fetchDog(pet.pet_external_id);
     htmlString += `<section id="petcard" class="card">
-    <img class="card-img" src="img/PetLogo.png" />
+    <img class="card-img" src="${dog.photos[0].medium}" />
     <section class="lower-card">
       <h2 class="pet-name">${pet.name}</h2>
       <section class="card-buttons"><button class="card-button" id="deletebutton${petCounter}">
@@ -48,7 +49,7 @@ async function getUserPets() {
       }
       const petList = await response.json();
       if (petList) {
-        buildCards(petList);
+        await buildCards(petList);
         setUpClicklisteners(petList);
       }
     } catch (error) {
@@ -178,5 +179,14 @@ async function handlePetDeletion(pet) {
     const success = response.json();
   } catch (error) {
     console.log(error);
+  }
+}
+
+async function fetchDog(seenExtPetId) {
+  try {
+    const response = await fetch('/getDog/' + seenExtPetId);
+    return await response.json();
+  } catch (error) {
+    console.error('err', error);
   }
 }
