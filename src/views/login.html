@@ -4,22 +4,22 @@
 <head>
   <meta charset="utf-8">
   <title>Login Page</title>
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/Styling.css">
-  <script src="js/header.js" defer></script>
+  <link rel="stylesheet" href="css/forms.css">
+  <script src="js/login.js" defer></script>
 </head>
 
 <body>
-  <container class="RegisterContainer">
-    <h2>Login</h2>
-    <form action="/login" method="POST">
+  <section class="container">
+    <form id="loginForm">
+      <span id="error" name="error"></span>
+      <h2>Login</h2>
       <input type="text" id="username" name="username" placeholder="Username">
       <input type="password" id="password" name="password" placeholder="Password">
-      <button type="submit">Login</button>
+      <button id="button" type="submit">Login</button>
+      <p>Don't have an account? <a href="/register">Register</a></p>
     </form>
-    <p>Don't have an account? <a href="/register">Register</a></p>
 
-  </container>
+  </section>
 </body>
 
 </html>

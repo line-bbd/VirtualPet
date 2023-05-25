@@ -9,7 +9,9 @@ class Pet {
   //   this.energy = 100;
   // }
 
-  constructor(health, happiness, fed, hygiene, energy) {
+  constructor(pet_id,name,health,happiness,fed,hygiene,energy){
+    this.pet_id = pet_id;
+    this.name = name;
     this.health = health;
     this.happiness = happiness;
     this.fed = fed;
@@ -18,30 +20,55 @@ class Pet {
   }
 
   feed() {
-    this.fed += 5;
-    this.happiness += 5;
-    this.energy += 5;
+    this.fed = Math.min(this.fed+5,100);
+    this.happiness = Math.min(this.happiness+5,100);
+    this.energy = Math.min(this.energy+5,100);
     this.message = "You fed your pet!";
   }
 
   giveAttention() {
-    this.happiness += 5;
-    this.energy -= 3;
+    this.happiness = Math.min(this.happiness+5,100);
+    this.energy = Math.max(this.energy-3,0);
     this.message = "You gave your pet attention!";
   }
 
   giveMedicine() {
-    this.health += 5;
-    this.happiness -= 3;
-    this.energy -= 3;
+    this.health = Math.min(this.health+5,100);
+    this.happiness = Math.max(this.happiness-3,0);
+    this.energy = Math.max(this.energy-3,0);
     this.message = "You gave your pet medicine!";
   }
 
   giveBath() {
-    this.hygiene += 5;
-    this.happiness += 5;
-    this.energy -= 3;
+    this.hygiene = Math.min(this.hygiene+5,100);
+    this.happiness = Math.max(this.happiness-3,0);
+    this.energy = Math.max(this.energy-3,0);
     this.message = "You gave your pet a bath!";
+  }
+
+  getRandomValue(min,max){
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  updatePetStatsRandomly()
+  {
+    let min = 0;
+    let max = 5;
+    this.health = Math.max(this.health-this.getRandomValue(min,max),0);
+    this.happiness = Math.max(this.happiness-this.getRandomValue(min,max),0);
+    this.fed = Math.max(this.fed-this.getRandomValue(min,max),0);
+    this.hygiene = Math.max(this.hygiene-this.getRandomValue(min,max),0);
+    this.energy = Math.max(this.energy-this.getRandomValue(min,max),0);
+
+
+  }
+
+  setPetStats(data){
+    this.health = data.health,
+    this.happiness = data.happiness,
+    this.fed = data.fed,
+    this.hygiene = data.hygiene,
+    this.energy = data.energy
   }
 
   // giveTreat() {
@@ -59,7 +86,7 @@ class Pet {
 
   // sleep() {
   //   this.energy += 20;
-  //   this.happiness += 10;
+  //   this.happiness += max;
   //   this.hunger -= 5;
   //   this.message = "You put your pet to bed!";
   // }

@@ -63,7 +63,7 @@ function validRegistration(username, password, confirmPassword, users) {
     return {
       valid: false,
       message: "Passwords do not match",
-    };
+    };expressvalidRegistration
   }
   return {
     valid: true,

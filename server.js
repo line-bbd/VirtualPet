@@ -1,5 +1,6 @@
 require('dotenv').config();
 const path = require('path');
+const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const express = require('express');
@@ -11,15 +12,19 @@ const { Pages, validLogin, validRegistration } = require('./src/utils/utils');
 
 const app = express();
 app.use(express.json());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 const port = 3000; // TODO: Remove this later
+
 const auth = new Auth();
 const navigator = new Navigator();
 const petfinderAPI = new extAPI();
 
-//TODO: the logic is as follows:
-//When the user enters the play page the pet is initialized
-//All the interactions are done on this pet model(feed,walk etc)
-//The changes are then persisted when they logout, exit etc
+let petInSession = new Pet();
+let userIDInSession;
+let timeIntevalInMinutes = 1;
 
 const connectionConfig = {
   user: process.env.DB_USER,
@@ -30,9 +35,6 @@ const connectionConfig = {
   ssl: true,
 };
 
-const pet = new Pet(100, 100, 100, 100, 100);
-
-// section for db query methods
 const getUsers = async () => {
   const usersQuery = 'SELECT * FROM users;';
   return await executeQuery(usersQuery);
@@ -42,6 +44,16 @@ const addUser = async (username, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const addUserQuery = `INSERT INTO users (username, password) VALUES ('${username}', '${hashedPassword}');`;
   await executeQuery(addUserQuery);
+};
+
+const getLastSeen = async () => {
+  const getUserQuery = `SELECT last_seen FROM users WHERE user_id = ${auth.userID};`;
+  return await executeQuery(getUserQuery);
+};
+
+const updateLastSeen = async () => {
+  const updateUserQuery = `UPDATE users set last_seen = now() where user_id = ${userIDInSession};`;
+  await executeQuery(updateUserQuery);
 };
 
 const deletePet = async (pet_id) => {
@@ -60,8 +72,8 @@ const selectPet = async (pet_id) => {
     JSON.stringify((await executeQuery(selectPetQuery))[0])
   );
   console.log(data);
-  pet.setPetName(data.name);
-  pet.setPetType(data.type);
+  petInSession.setPetName(data.name);
+  petInSession.setPetType(data.type);
 };
 
 const getPetStats = async (pet_id) => {
@@ -70,18 +82,26 @@ const getPetStats = async (pet_id) => {
   return data;
 };
 
-// section ends here
+const getPetInfo = async (pet_id) => {
+  const petQuery = `SELECT * FROM pets WHERE pet_id = ${pet_id};`;
+  const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
+  return data;
+};
+
+const persistPetStats = async (d) => {
+  const petQuery = `UPDATE pet_stats SET health = ${petInSession.health},
+  happiness = ${petInSession.happiness},
+  energy = ${petInSession.energy},
+  fed = ${petInSession.fed},
+  hygiene = ${petInSession.hygiene}
+  WHERE pet_id = ${petInSession.pet_id};`;
+  executeQuery(petQuery);
+};
 
 const setPetStats = async (data) => {
-  pet.setPetStats(
-    data.health,
-    data.happiness,
-    data.fed,
-    data.hygiene,
-    data.energy
-  );
+  petInSession.setPetStats(data);
 
-  console.log(pet);
+  console.log(petInSession);
 };
 
 const executeQuery = async (query) => {
@@ -106,12 +126,6 @@ const executeQuery = async (query) => {
     }
   }
 };
-
-// const updatePetStats = async (pet) => {
-//   await executeQuery(
-//     `UPDATE pet_stats SET health = ${pet.health}, happiness = ${pet.happiness}, energy = ${pet.energy}, fed = ${pet.fed}, hygiene = ${pet.hygiene} WHERE pet_id = ${pet.id}`
-//   );
-// };
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -226,10 +240,7 @@ app.get(Pages.ADOPT.url, (req, res) => {
   }
 });
 
-app.get(Pages.VIEWPET.url, (req, res) => {
-  console.log('PLAY');
-  console.log(auth);
-
+app.get(Pages.VIEWPET.url, async (req, res) => {
   navigator.navigate(res, 'VIEWPET');
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
@@ -238,39 +249,19 @@ app.get(Pages.VIEWPET.url, (req, res) => {
   }
 });
 
-// app.post(Pages.VIEWPET.url, (req, res) => {
-//   // feed endpoint
-//   const { feed } = req.query;
-//   if (feed === "true") {
-//     pet.feed();
-//     console.log(pet);
-//   }
-// });
+app.post(Pages.VIEWPET.url + '/setPetID/:pet_id', async (req, res) => {
+  petInSession.pet_id = req.params.pet_id;
+  userIDInSession = auth.userID;
+});
 
 app.post(Pages.VIEWPET.url + '/feed', (req, res) => {
   petInSession.feed();
   console.log(petInSession);
   res.json(petInSession);
-  // connection.connect();
-  // let query = 'Update pet_stats set hunger = ?, bordem = ?, health = ?, thirst = ?, hygiene = ? where pet_id = ?';
-  // query = mysql.format(query,req.params.pet_id);
-
-  // connection.query(query, (err, rows, fields) => {
-  //   if (err) throw err
-  //   petInSession.feed();
-
-  //   res.json(rows[0]);
-
-  // })
-
-  // pet.feed();
-  // console.log(pet);
-  // res.json(pet);
 });
 
 app.post(Pages.VIEWPET.url + '/attention', (req, res) => {
   petInSession.giveAttention();
-  updatePetStats(petInSession);
   console.log(petInSession);
   res.json(petInSession);
 });
@@ -287,60 +278,60 @@ app.post(Pages.VIEWPET.url + '/bath', (req, res) => {
   res.json(petInSession);
 });
 
-// app.post(Pages.VIEWPET.url + "/treat", (req, res) => {
-//   pet.giveTreat();
-//   console.log(pet);
-//   res.json(pet);
-// });
-
-// app.post(Pages.VIEWPET.url + "/toy", (req, res) => {
-//   pet.giveToy();
-//   console.log(pet);
-//   res.json(pet);
-// });
-
-// app.post(Pages.VIEWPET.url + "/sleep", (req, res) => {
-//   pet.sleep();
-//   console.log(pet);
-//   res.json(pet);
-// });
-
 app.get('/logout', (req, res) => {
   auth.logout();
   navigator.setAuth(auth);
+  res.json(petInSession);
   res.redirect(Pages.LOGIN.url);
 });
 
-// app.get(Pages.VIEWPET.url + "/getPetStats/:pet_id", (req, res) => {
-//   // connection.connect();
-//   let query = "SELECT * From Pet_stats WHERE pet_id =?";
-//   query = mysql.format(query, req.params.pet_id);
-//   connection.query(query, (err, rows, fields) => {
-//     if (err) throw err;
-//     let result = rows[0];
-//     console.log(result);
-//     petInSession = new Pet(
-//       result.health,
-//       result.happiness,
-//       result.fed,
-//       result.hygiene,
-//       result.energy
-//     );
+app.get(Pages.VIEWPET.url + '/getPetStats', async (req, res) => {
+  const petInfo = await getPetInfo(petInSession.pet_id);
+  petInSession.name = petInfo.name;
 
-//     res.json(rows[0]);
-//   });
-// });
+  let currTime = new Date();
+  let lastSeen = await getLastSeen();
+  let lastSeenTime = new Date(lastSeen[0].last_seen);
+  let timeDiffMinutes = (currTime.getTime() - lastSeenTime.getTime()) / 60000;
 
-//PET DB QUERIES: Waiting for hosted database
+  let timeIntervalsPassed = Math.floor(timeDiffMinutes / timeIntevalInMinutes);
+
+  const petStats = await getPetStats(petInSession.pet_id);
+  petInSession.health = petStats.health;
+  petInSession.happiness = petStats.happiness;
+  petInSession.fed = petStats.fed;
+  petInSession.hygiene = petStats.hygiene;
+  petInSession.energy = petStats.energy;
+
+  for (let index = 0; index < timeIntervalsPassed; index++) {
+    petInSession.updatePetStatsRandomly();
+  }
+
+  console.log(petInSession);
+
+  res.json(petInSession);
+});
+
+app.get(Pages.VIEWPET.url + '/updatePetStatsRandomly', async (req, res) => {
+  petInSession.updatePetStatsRandomly();
+  res.json(petInSession);
+});
+
+app.post(Pages.VIEWPET.url + '/endSession', async (req, res) => {
+  console.log('Saving session');
+  persistPetStats();
+  updateLastSeen();
+});
+
 app.post('/addPet', async (req, res) => {
   const externalID = req.body.externalID;
-  const userID = req.body.id;
+  const userID = auth.userID;
   const name = req.body.name;
   const dateCreated = req.body.dateCreated;
   const type = req.body.type;
-  await executeQuery(
-    `INSERT INTO pets (pet_external_id, user_id, name, date_created, type) VALUES (${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`
-  );
+
+  const insertStatement = `INSERT INTO pets (pet_external_id, user_id, name, date_created, type) VALUES (${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`;
+  await executeQuery(insertStatement);
 });
 
 app.get('/getDog/:seenExtPetId', async (req, res) => {
@@ -369,11 +360,6 @@ app.get('/getUserPets/:userId', async (req, res) => {
   res.json(data);
 });
 
-app.get('/getPetStats/:pet_id', async (req, res) => {
-  const pet_id = req.params.pet_id;
-  getPetStats(pet_id);
-});
-
 app.get('/getExternalIDs', async (req, res) => {
   const selectStatement = 'SELECT pet_external_id From pets';
   const data = JSON.parse(JSON.stringify(await executeQuery(selectStatement)));
@@ -387,33 +373,16 @@ app.post('/selectPet/:pet_id', async (req, res) => {
   await setPetStats(petStats);
 });
 
-// app.put("/updatePetStats", async (req, res) => {
-//   const petID = req.body.petID;
-//   const health = req.body.health;
-//   const happiness = req.body.happiness;
-//   const energy = req.body.happiness;
-//   const fed = req.body.fed;
-//   const hygiene = req.body.hygiene;
-
-//   await executeQuery(
-//     `UPDATE pet_stats SET health = ${health}, happiness = ${happiness}, energy = ${energy}, fed = ${fed}, hygiene = ${hygiene} WHERE pet_id = ${petID}`
-//   );
-// });
-
 app.get('/getDog/:seenExtPetId', async (req, res) => {
   let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
 
   res.json(results);
 });
+
 // redirect user to base url if they try to access a route that doesn't exist
 app.get('*', (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
-
-// set routes
-// const router = require("./src/routes/index");
-
-// app.use(Pages.LOGIN.url, router);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

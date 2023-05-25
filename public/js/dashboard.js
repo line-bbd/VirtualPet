@@ -1,12 +1,28 @@
-// document.addEventListener("DOMContentLoaded", () => {
-//   // Get the action buttons
-//   const adoptButton = document.getElementById("selectBtn");
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // get pet list for user
+    const response = await fetch('/dashboard/petList', { method: 'GET' });
+    if (!response.ok) {
+      throw new Error('Failed to get pet list');
+    }
+    const petList = await response.json();
+    console.log(petList);
+  } catch (error) {
+    console.error(error);
+  }
+});
 
-//   // Add event listeners to the buttons
-//   adoptButton.addEventListener("click", selectPet);
-// });
-
-getUserPets();
+document.addEventListener('DOMContentLoaded', () => {
+  let btn = document.getElementById('playBtn');
+  btn.addEventListener('click', function () {
+    try {
+      let pet_id = '4'; //TODO need to get selected pet id here
+      fetch('/viewPet/setPetID/' + pet_id, { method: 'POST' });
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
 
 async function selectPet() {
   try {
