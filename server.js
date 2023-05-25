@@ -222,13 +222,7 @@ app.post(Pages.DASHBOARD.url + '/deletePet', async (req, res) => {
 });
 
 app.get(Pages.ADOPT.url, (req, res) => {
-<<<<<<< HEAD
-  console.log('ADOPT', pet);
-  console.log(auth);
   navigator.navigate(res, 'ADOPT');
-=======
-  navigator.navigate(res, "ADOPT");
->>>>>>> main
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
   } else {
@@ -329,13 +323,8 @@ app.post('/addPet', async (req, res) => {
   await executeQuery(insertStatement);
 });
 
-<<<<<<< HEAD
 app.get('/getDog/:seenExtPetId', async (req, res) => {
   let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
-=======
-app.get("/getDog/:seenExtPetId", async (req, res) => {
-  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1,);
->>>>>>> main
   res.json(results);
 });
 
