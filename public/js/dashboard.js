@@ -17,7 +17,8 @@ async function buildCards(userUserPets) {
     <button class="card-button" id="playbutton${petCounter}">
       <i class="fa-regular fa-circle-play icon-style"></i>
     </button>
-    </a></section>
+    </a>
+    </section>
     </section>
     </section>`;
     petCounter++;
@@ -66,12 +67,11 @@ function setUpClicklisteners(petList) {
         handlePetDeletion(petList[0]);
       });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      let btn = document.getElementById('playbutton1');
-      btn.addEventListener('click', function () {
+    document
+      .getElementById('playbutton1')
+      .addEventListener('click', function () {
         handleViewPet(petList[0]);
       });
-    });
   }
 
   if (petList[1]) {
@@ -81,12 +81,11 @@ function setUpClicklisteners(petList) {
         handlePetDeletion(petList[1]);
       });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      let btn = document.getElementById('playbutton2');
-      btn.addEventListener('click', function () {
+    document
+      .getElementById('playbutton2')
+      .addEventListener('click', function () {
         handleViewPet(petList[1]);
       });
-    });
   }
 
   if (petList[2]) {
@@ -96,12 +95,11 @@ function setUpClicklisteners(petList) {
         handlePetDeletion(petList[2]);
       });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      let btn = document.getElementById('playbutton3');
-      btn.addEventListener('click', function () {
+    document
+      .getElementById('playbutton3')
+      .addEventListener('click', function () {
         handleViewPet(petList[2]);
       });
-    });
   }
 
   if (petList[3]) {
@@ -111,12 +109,11 @@ function setUpClicklisteners(petList) {
         handlePetDeletion(petList[3]);
       });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      let btn = document.getElementById('playbutton4');
-      btn.addEventListener('click', function () {
+    document
+      .getElementById('playbutton4')
+      .addEventListener('click', function () {
         handleViewPet(petList[3]);
       });
-    });
   }
 
   if (document.getElementById('adoptpetbutton1')) {
@@ -162,24 +159,24 @@ function handleViewPet(pet) {
 }
 
 async function handlePetDeletion(pet) {
-  try {
-    const response = await fetch('/dashboard/deletePet', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        petId: pet.pet_id,
-      }),
-    });
-    console.log(response);
-    if (!response.ok) {
-      throw new Error('Failed to delete pet');
-    }
-    const success = response.json();
-  } catch (error) {
-    console.log(error);
-  }
+  // try {
+  //   const response = await fetch('/dashboard/deletePet', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       petId: pet.pet_id,
+  //     }),
+  //   });
+  //   console.log(response);
+  //   if (!response.ok) {
+  //     throw new Error('Failed to delete pet');
+  //   }
+  //   const success = response.json();
+  // } catch (error) {
+  //   console.log(error);
+  // }
 }
 
 async function fetchDog(seenExtPetId) {
