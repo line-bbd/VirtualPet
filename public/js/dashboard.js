@@ -1,41 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    // get pet list for user
-    const response = await fetch('/dashboard/petList', { method: 'GET' });
-    if (!response.ok) {
-      throw new Error('Failed to get pet list');
-    }
-    const petList = await response.json();
-    console.log(petList);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  let btn = document.getElementById('playBtn');
-  btn.addEventListener('click', function () {
-    try {
-      let pet_id = '4'; //TODO need to get selected pet id here
-      fetch('/viewPet/setPetID/' + pet_id, { method: 'POST' });
-    } catch (error) {
-      console.error(error);
-    }
-  });
-});
-
-async function selectPet() {
-  try {
-    let pet_id = '4';
-    const response = await fetch('/selectPet/' + pet_id, { method: 'POST' });
-    if (!response.ok) {
-      throw new Error('Failed to select pet');
-    }
-    const success = await response.json();
-  } catch (error) {
-    console.error(error);
-  }
-}
+getUserPets();
 
 function buildCards(userUserPets) {
   const cardLayout = document.querySelector('#cardLayout');
@@ -43,17 +6,19 @@ function buildCards(userUserPets) {
   let petCounter = 1;
   for (let pet of userUserPets) {
     htmlString += `<section id="petcard" class="card">
-<img class="card-img" src="img/PetLogo.png" />
-<section class="lower-card">
-  <h2 class="pet-name">${pet.name}</h2>
-  <section class="card-buttons"><button class="card-button" id="deletebutton${petCounter}">
-  <i class="fa-solid fa-trash icon-style"></i>
-</button>
-<button class="card-button" id="playbutton${petCounter}">
-  <i class="fa-regular fa-circle-play icon-style"></i>
-</button></section>
-</section>
-</section>`;
+    <img class="card-img" src="img/PetLogo.png" />
+    <section class="lower-card">
+      <h2 class="pet-name">${pet.name}</h2>
+      <section class="card-buttons"><button class="card-button" id="deletebutton${petCounter}">
+      <i class="fa-solid fa-trash icon-style"></i>
+    </button>
+    <a href="/viewPet">
+    <button class="card-button" id="playbutton${petCounter}">
+      <i class="fa-regular fa-circle-play icon-style"></i>
+    </button>
+    </a></section>
+    </section>
+    </section>`;
     petCounter++;
   }
 
@@ -77,7 +42,6 @@ function buildCards(userUserPets) {
 async function getUserPets() {
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      // get pet list for user
       const response = await fetch('/dashboard/petList', { method: 'GET' });
       if (!response.ok) {
         throw new Error('Failed to get pet list');
@@ -100,6 +64,13 @@ function setUpClicklisteners(petList) {
       .addEventListener('click', function () {
         handlePetDeletion(petList[0]);
       });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let btn = document.getElementById('playbutton1');
+      btn.addEventListener('click', function () {
+        handleViewPet(petList[0]);
+      });
+    });
   }
 
   if (petList[1]) {
@@ -108,6 +79,13 @@ function setUpClicklisteners(petList) {
       .addEventListener('click', function () {
         handlePetDeletion(petList[1]);
       });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let btn = document.getElementById('playbutton2');
+      btn.addEventListener('click', function () {
+        handleViewPet(petList[1]);
+      });
+    });
   }
 
   if (petList[2]) {
@@ -116,6 +94,13 @@ function setUpClicklisteners(petList) {
       .addEventListener('click', function () {
         handlePetDeletion(petList[2]);
       });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let btn = document.getElementById('playbutton3');
+      btn.addEventListener('click', function () {
+        handleViewPet(petList[2]);
+      });
+    });
   }
 
   if (petList[3]) {
@@ -124,6 +109,13 @@ function setUpClicklisteners(petList) {
       .addEventListener('click', function () {
         handlePetDeletion(petList[3]);
       });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let btn = document.getElementById('playbutton4');
+      btn.addEventListener('click', function () {
+        handleViewPet(petList[3]);
+      });
+    });
   }
 
   if (document.getElementById('adoptpetbutton1')) {
@@ -156,6 +148,15 @@ function setUpClicklisteners(petList) {
       .addEventListener('click', function () {
         location.href = '/adopt';
       });
+  }
+}
+
+function handleViewPet(pet) {
+  try {
+    let pet_id = pet.pet_id;
+    fetch('/viewPet/setPetID/' + pet_id, { method: 'POST' });
+  } catch (error) {
+    console.error(error);
   }
 }
 
