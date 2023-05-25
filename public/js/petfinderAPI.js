@@ -1,16 +1,29 @@
-let params = new URLSearchParams();
-params.append("grant_type", "client_credentials");
-params.append(
-  "client_id",
-  "NLXT7lOmTd7jPfJNx1W5pzAhETraAzSCQiAuwN5hsbbQJVhU4w"
-);
-params.append("client_secret", "FOiIjVrCHVf7dopm27ijFBuy9jCSReLbpDAsaMqH");
-
 class petfinderAPI {
+
+  constructor(){
+    this.params = new URLSearchParams();
+    this.initParams();
+  }
+
+  async initParams(){
+    this.params.append("grant_type", "client_credentials");
+
+    this.params.append(
+      "client_id",
+      process.env.PETFINDER_CLIENT_ID
+    );
+
+    this.params.append(
+      "client_secret",
+      process.env.PETFINDER_CLIENT_SECRET
+    );
+
+  }
+
   async getToken() {
     const response = await fetch("https://api.petfinder.com/v2/oauth2/token", {
       method: "POST",
-      body: params,
+      body: this.params,
       headers: {},
     });
     const myJson = response.json();
@@ -18,13 +31,13 @@ class petfinderAPI {
   }
 
   async getDog(seenExtPetId, page) {
-    let allDogs, dogsInDB, foundDogs, retDog;
-    dogsInDB = []; //TODO: Get all external ids of dogs in our db
+    let allDogs, foundDogs, retDog;
 
     let dogFound = false;
     while (!dogFound) {
       allDogs = await this.getAllDogsByPage(page);
-      foundDogs = this.filterDogs(seenExtPetId, dogsInDB, allDogs);
+      console.log(allDogs);
+      foundDogs = this.filterDogs(seenExtPetId, allDogs);
 
       if (foundDogs.length == 0) {
         page = page + 1;
@@ -55,14 +68,12 @@ class petfinderAPI {
   // 1) Has at least 1 picture
   // 2) Has at least 1 trait
   // 3) Has not been seen by this specific user before
-  // 4) Has not been 'adopted' by a user in our db before
-  filterDogs(seenExtPetId, dogsInDB, allDogs) {
+  filterDogs(seenExtPetId, allDogs) {
     let foundDogs = allDogs["animals"].filter(
       (dog) =>
         dog.photos.length > 0 &&
         dog.tags.length > 0 &&
-        !seenExtPetId.includes(dog.id) &&
-        !dogsInDB.includes(dog.id)
+        !seenExtPetId.includes(dog.id)
     );
     return foundDogs;
   }

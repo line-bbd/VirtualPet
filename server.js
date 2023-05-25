@@ -88,7 +88,7 @@ const getPetInfo = async (pet_id) => {
   return data;
 };
 
-const persistPetStats = async (d) => {
+const persistPetStats = async () => {
   const petQuery = `UPDATE pet_stats SET health = ${petInSession.health},
   happiness = ${petInSession.happiness},
   energy = ${petInSession.energy},
@@ -216,8 +216,6 @@ app.get(Pages.DASHBOARD.url + "/petList", async (req, res) => {
 });
 
 app.get(Pages.ADOPT.url, (req, res) => {
-  console.log("ADOPT", pet);
-  console.log(auth);
   navigator.navigate(res, "ADOPT");
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
@@ -320,7 +318,7 @@ app.post("/addPet", async (req, res) => {
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
-  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1,);
   res.json(results);
 });
 
@@ -360,7 +358,6 @@ app.post("/selectPet/:pet_id", async (req, res) => {
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
   let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
-
   res.json(results);
 });
 
