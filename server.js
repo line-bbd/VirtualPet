@@ -154,18 +154,14 @@ app.post(Pages.LOGIN.url, async (req, res) => {
     const users = await getUsers();
 
     const login = validLogin(username, password, users);
+    console.log(login);
 
     if (login.valid) {
       const id = users.find((user) => user.username === username).user_id;
       auth.login(username, id);
       navigator.setAuth(auth);
-      navigator.navigate(res, "DASHBOARD");
-      res.redirect(navigator.destination.url);
-    } else {
-      // response containing error message
-      res.json(login);
-      console.log(login.message);
     }
+    res.json(login);
   } catch (err) {
     console.log("Error logging in:", err);
     res.status(500).send("Internal Server Error");
@@ -193,12 +189,8 @@ app.post(Pages.REGISTER.url, async (req, res) => {
     );
     if (registration.valid) {
       await addUser(username, password);
-      res.redirect(Pages.LOGIN.url);
-    } else {
-      // response containing error message
-      res.json(registration);
-      console.log(registration.message);
     }
+    res.json(registration);
   } catch {
     console.log("Error registering!");
     res.redirect(Pages.REGISTER.url);
