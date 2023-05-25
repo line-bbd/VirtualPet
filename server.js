@@ -1,13 +1,13 @@
-require("dotenv").config();
-const path = require("path");
-const { Pool } = require("pg");
-const bcrypt = require("bcrypt");
-const express = require("express");
-const Pet = require("./src/models/pet");
-const Auth = require("./src/models/auth");
-const Navigator = require("./src/controller/navigator");
-const extAPI = require("./public/js/petfinderAPI");
-const { Pages, validLogin, validRegistration } = require("./src/utils/utils");
+require('dotenv').config();
+const path = require('path');
+const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
+const express = require('express');
+const Pet = require('./src/models/pet');
+const Auth = require('./src/models/auth');
+const Navigator = require('./src/controller/navigator');
+const extAPI = require('./public/js/petfinderAPI');
+const { Pages, validLogin, validRegistration } = require('./src/utils/utils');
 
 const app = express();
 app.use(express.json());
@@ -34,7 +34,7 @@ const pet = new Pet(100, 100, 100, 100, 100);
 
 // section for db query methods
 const getUsers = async () => {
-  const usersQuery = "SELECT * FROM users;";
+  const usersQuery = 'SELECT * FROM users;';
   return await executeQuery(usersQuery);
 };
 
@@ -45,7 +45,7 @@ const addUser = async (username, password) => {
 };
 
 const deletePet = async (pet_id) => {
-  const deletePetQuery = `DELETE FROM Pets WHERE pet_id = ${pet_id};`;
+  const deletePetQuery = `DELETE FROM pet_stats WHERE pet_id = ${pet_id}; DELETE FROM pets WHERE pet_id = ${pet_id};`;
   await executeQuery(deletePetQuery);
 };
 
@@ -92,10 +92,10 @@ const executeQuery = async (query) => {
     client = await pool.connect();
     const result = await client.query(query);
     const data = result.rows;
-    console.log("d", data.type);
+    console.log('d', data?.type);
     return data;
   } catch (err) {
-    console.error("Error retrieving data:", err);
+    console.error('Error retrieving data:', err);
     throw err;
   } finally {
     if (client) {
@@ -114,22 +114,22 @@ const executeQuery = async (query) => {
 // };
 
 // Serve static files from the public directory
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // setup access to req var
 app.use(express.urlencoded({ extended: false }));
 
 // Set the MIME type for JavaScript files
 app.use((req, res, next) => {
-  if (req.path.endsWith(".js")) {
-    res.setHeader("Content-Type", "application/javascript");
+  if (req.path.endsWith('.js')) {
+    res.setHeader('Content-Type', 'application/javascript');
   }
   next();
 });
 
 // set views
 app.get(Pages.LOGIN.url, (req, res) => {
-  navigator.navigate(res, "LOGIN");
+  navigator.navigate(res, 'LOGIN');
   res.sendFile(__dirname + navigator.destination.dir);
 });
 
@@ -146,7 +146,7 @@ app.post(Pages.LOGIN.url, async (req, res) => {
       const id = users.find((user) => user.username === username).user_id;
       auth.login(username, id);
       navigator.setAuth(auth);
-      navigator.navigate(res, "DASHBOARD");
+      navigator.navigate(res, 'DASHBOARD');
       res.redirect(navigator.destination.url);
     } else {
       // response containing error message
@@ -154,13 +154,13 @@ app.post(Pages.LOGIN.url, async (req, res) => {
       console.log(login.message);
     }
   } catch (err) {
-    console.log("Error logging in:", err);
-    res.status(500).send("Internal Server Error");
+    console.log('Error logging in:', err);
+    res.status(500).send('Internal Server Error');
   }
 });
 
 app.get(Pages.REGISTER.url, (req, res) => {
-  navigator.navigate(res, "REGISTER");
+  navigator.navigate(res, 'REGISTER');
   res.sendFile(__dirname + navigator.destination.dir);
 });
 
@@ -187,15 +187,15 @@ app.post(Pages.REGISTER.url, async (req, res) => {
       console.log(registration.message);
     }
   } catch {
-    console.log("Error registering!");
+    console.log('Error registering!');
     res.redirect(Pages.REGISTER.url);
   }
 });
 
 app.get(Pages.DASHBOARD.url, (req, res) => {
-  console.log("DASHBOARD");
+  console.log('DASHBOARD');
   console.log(auth);
-  navigator.navigate(res, "DASHBOARD");
+  navigator.navigate(res, 'DASHBOARD');
 
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
@@ -204,16 +204,21 @@ app.get(Pages.DASHBOARD.url, (req, res) => {
   }
 });
 
-app.get(Pages.DASHBOARD.url + "/petList", async (req, res) => {
+app.get(Pages.DASHBOARD.url + '/petList', async (req, res) => {
   const petList = await getPetList(auth.userID);
   console.log(petList);
   res.json(petList);
 });
 
+app.post(Pages.DASHBOARD.url + '/deletePet', async (req, res) => {
+  const response = await deletePet(req.body.petId);
+  res.json(response);
+});
+
 app.get(Pages.ADOPT.url, (req, res) => {
-  console.log("ADOPT", pet);
+  console.log('ADOPT', pet);
   console.log(auth);
-  navigator.navigate(res, "ADOPT");
+  navigator.navigate(res, 'ADOPT');
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
   } else {
@@ -222,10 +227,10 @@ app.get(Pages.ADOPT.url, (req, res) => {
 });
 
 app.get(Pages.VIEWPET.url, (req, res) => {
-  console.log("PLAY");
+  console.log('PLAY');
   console.log(auth);
 
-  navigator.navigate(res, "VIEWPET");
+  navigator.navigate(res, 'VIEWPET');
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
   } else {
@@ -242,7 +247,7 @@ app.get(Pages.VIEWPET.url, (req, res) => {
 //   }
 // });
 
-app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
+app.post(Pages.VIEWPET.url + '/feed', (req, res) => {
   petInSession.feed();
   console.log(petInSession);
   res.json(petInSession);
@@ -263,20 +268,20 @@ app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
   // res.json(pet);
 });
 
-app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
+app.post(Pages.VIEWPET.url + '/attention', (req, res) => {
   petInSession.giveAttention();
   updatePetStats(petInSession);
   console.log(petInSession);
   res.json(petInSession);
 });
 
-app.post(Pages.VIEWPET.url + "/medicine", (req, res) => {
+app.post(Pages.VIEWPET.url + '/medicine', (req, res) => {
   petInSession.giveMedicine();
   console.log(petInSession);
   res.json(petInSession);
 });
 
-app.post(Pages.VIEWPET.url + "/bath", (req, res) => {
+app.post(Pages.VIEWPET.url + '/bath', (req, res) => {
   petInSession.giveBath();
   console.log(petInSession);
   res.json(petInSession);
@@ -300,7 +305,7 @@ app.post(Pages.VIEWPET.url + "/bath", (req, res) => {
 //   res.json(pet);
 // });
 
-app.get("/logout", (req, res) => {
+app.get('/logout', (req, res) => {
   auth.logout();
   navigator.setAuth(auth);
   res.redirect(Pages.LOGIN.url);
@@ -327,7 +332,7 @@ app.get("/logout", (req, res) => {
 // });
 
 //PET DB QUERIES: Waiting for hosted database
-app.post("/addPet", async (req, res) => {
+app.post('/addPet', async (req, res) => {
   const externalID = req.body.externalID;
   const userID = req.body.id;
   const name = req.body.name;
@@ -338,12 +343,12 @@ app.post("/addPet", async (req, res) => {
   );
 });
 
-app.get("/getDog/:seenExtPetId", async (req, res) => {
+app.get('/getDog/:seenExtPetId', async (req, res) => {
   let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
   res.json(results);
 });
 
-app.get("/getPet/:petID", async (req, res) => {
+app.get('/getPet/:petID', async (req, res) => {
   const petID = req.params.petID;
 
   const data = JSON.parse(
@@ -354,7 +359,7 @@ app.get("/getPet/:petID", async (req, res) => {
   res.json(data);
 });
 
-app.get("/getUserPets/:userId", async (req, res) => {
+app.get('/getUserPets/:userId', async (req, res) => {
   const userId = req.params.userId;
   const data = JSON.parse(
     JSON.stringify(
@@ -364,18 +369,18 @@ app.get("/getUserPets/:userId", async (req, res) => {
   res.json(data);
 });
 
-app.get("/getPetStats/:pet_id", async (req, res) => {
+app.get('/getPetStats/:pet_id', async (req, res) => {
   const pet_id = req.params.pet_id;
   getPetStats(pet_id);
 });
 
-app.get("/getExternalIDs", async (req, res) => {
-  const selectStatement = "SELECT pet_external_id From pets";
+app.get('/getExternalIDs', async (req, res) => {
+  const selectStatement = 'SELECT pet_external_id From pets';
   const data = JSON.parse(JSON.stringify(await executeQuery(selectStatement)));
   res.json(data);
 });
 // api query to 'select' one of the existing user's pets
-app.post("/selectPet/:pet_id", async (req, res) => {
+app.post('/selectPet/:pet_id', async (req, res) => {
   const pet_id = req.params.pet_id;
   selectPet(pet_id);
   const petStats = await getPetStats(pet_id);
@@ -395,13 +400,13 @@ app.post("/selectPet/:pet_id", async (req, res) => {
 //   );
 // });
 
-app.get("/getDog/:seenExtPetId", async (req, res) => {
+app.get('/getDog/:seenExtPetId', async (req, res) => {
   let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
 
   res.json(results);
 });
 // redirect user to base url if they try to access a route that doesn't exist
-app.get("*", (req, res) => {
+app.get('*', (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
