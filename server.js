@@ -63,7 +63,7 @@ const deletePet = async (pet_id) => {
 
 const getPetList = async (user_id) => {
   const petListQuery = `SELECT * FROM Pets WHERE user_id = ${user_id};`;
-  return await executeQuery(petListQuery);
+  return await executeQuery(petListQuery);results
 };
 
 const selectPet = async (pet_id) => {
@@ -84,8 +84,9 @@ const getPetStats = async (pet_id) => {
 
 const getPetInfo = async (pet_id) => {
   const petQuery = `SELECT * FROM pets WHERE pet_id = ${pet_id};`;
-  const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
-  return data;
+  const results = await executeQuery(petQuery);
+  console.log("res",results);
+  return results;
 };
 
 const persistPetStats = async () => {
@@ -222,13 +223,7 @@ app.post(Pages.DASHBOARD.url + '/deletePet', async (req, res) => {
 });
 
 app.get(Pages.ADOPT.url, (req, res) => {
-<<<<<<< HEAD
-  console.log('ADOPT', pet);
-  console.log(auth);
-  navigator.navigate(res, 'ADOPT');
-=======
   navigator.navigate(res, "ADOPT");
->>>>>>> main
   if (navigator.destination === Pages.LOGIN) {
     res.redirect(navigator.destination.url);
   } else {
@@ -248,6 +243,7 @@ app.get(Pages.VIEWPET.url, async (req, res) => {
 app.post(Pages.VIEWPET.url + '/setPetID/:pet_id', async (req, res) => {
   petInSession.pet_id = req.params.pet_id;
   userIDInSession = auth.userID;
+  console.log("PIS",petInSession);
 });
 
 app.post(Pages.VIEWPET.url + '/feed', (req, res) => {
@@ -312,10 +308,14 @@ app.get(Pages.VIEWPET.url + '/updatePetStatsRandomly', async (req, res) => {
   res.json(petInSession);
 });
 
-app.post(Pages.VIEWPET.url + '/endSession', async (req, res) => {
-  console.log('Saving session');
-  persistPetStats();
-  updateLastSeen();
+app.post(Pages.VIEWPET.url + "/endSession", async (req, res) => {
+  console.log("Saving session");
+  if(!!petInSession.pet_id){
+    persistPetStats();
+  }
+  if(!!userIDInSession){
+    updateLastSeen();
+  }
 });
 
 app.post('/addPet', async (req, res) => {
@@ -329,13 +329,8 @@ app.post('/addPet', async (req, res) => {
   await executeQuery(insertStatement);
 });
 
-<<<<<<< HEAD
-app.get('/getDog/:seenExtPetId', async (req, res) => {
-  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
-=======
 app.get("/getDog/:seenExtPetId", async (req, res) => {
   let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1,);
->>>>>>> main
   res.json(results);
 });
 
