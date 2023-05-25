@@ -267,7 +267,6 @@ app.post(Pages.VIEWPET.url + "/bath", (req, res) => {
 app.get("/logout", (req, res) => {
   auth.logout();
   navigator.setAuth(auth);
-  res.json(petInSession);
   res.redirect(Pages.LOGIN.url);
 });
 
