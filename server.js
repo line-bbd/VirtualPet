@@ -71,15 +71,28 @@ const selectPet = async (pet_id) => {
   const data = JSON.parse(
     JSON.stringify((await executeQuery(selectPetQuery))[0])
   );
-  console.log(data);
   petInSession.setPetName(data.name);
   petInSession.setPetType(data.type);
 };
 
 const getPetStats = async (pet_id) => {
+  // check if pet_id first exists in pet_stats table
   const petQuery = `SELECT * FROM Pet_stats WHERE pet_id = ${pet_id};`;
-  const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
-  return data;
+  const result = await executeQuery(petQuery);
+  if (result.length === 0) {
+    const data = {
+      health: 100,
+      happiness: 100,
+      energy: 100,
+      fed: 100,
+      hygiene: 100,
+    };
+    setPetStats(data);
+    return data;
+  } else {
+    const data = JSON.parse(JSON.stringify(result[0]));
+    return data;
+  }
 };
 
 const getPetInfo = async (pet_id) => {
@@ -100,8 +113,6 @@ const persistPetStats = async () => {
 
 const setPetStats = async (data) => {
   petInSession.setPetStats(data);
-
-  console.log(petInSession);
 };
 
 const executeQuery = async (query) => {
@@ -112,7 +123,6 @@ const executeQuery = async (query) => {
     client = await pool.connect();
     const result = await client.query(query);
     const data = result.rows;
-    console.log("d", data?.type);
     return data;
   } catch (err) {
     console.error("Error retrieving data:", err);
@@ -155,7 +165,6 @@ app.post(Pages.LOGIN.url, async (req, res) => {
     const users = await getUsers();
 
     const login = validLogin(username, password, users);
-    console.log(login);
 
     if (login.valid) {
       const id = users.find((user) => user.username === username).user_id;
@@ -199,8 +208,6 @@ app.post(Pages.REGISTER.url, async (req, res) => {
 });
 
 app.get(Pages.DASHBOARD.url, (req, res) => {
-  console.log("DASHBOARD");
-  console.log(auth);
   navigator.navigate("DASHBOARD");
 
   if (navigator.destination === Pages.LOGIN) {
@@ -212,7 +219,6 @@ app.get(Pages.DASHBOARD.url, (req, res) => {
 
 app.get(Pages.DASHBOARD.url + "/petList", async (req, res) => {
   const petList = await getPetList(auth.userID);
-  console.log(petList);
   res.json(petList);
 });
 
@@ -246,25 +252,21 @@ app.post(Pages.VIEWPET.url + "/setPetID/:pet_id", async (req, res) => {
 
 app.post(Pages.VIEWPET.url + "/feed", (req, res) => {
   petInSession.feed();
-  console.log(petInSession);
   res.json(petInSession);
 });
 
 app.post(Pages.VIEWPET.url + "/attention", (req, res) => {
   petInSession.giveAttention();
-  console.log(petInSession);
   res.json(petInSession);
 });
 
 app.post(Pages.VIEWPET.url + "/medicine", (req, res) => {
   petInSession.giveMedicine();
-  console.log(petInSession);
   res.json(petInSession);
 });
 
 app.post(Pages.VIEWPET.url + "/bath", (req, res) => {
   petInSession.giveBath();
-  console.log(petInSession);
   res.json(petInSession);
 });
 
@@ -296,8 +298,6 @@ app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
     petInSession.updatePetStatsRandomly();
   }
 
-  console.log(petInSession);
-
   res.json(petInSession);
 });
 
@@ -325,6 +325,8 @@ app.post("/addPet", async (req, res) => {
 
   const insertStatement = `INSERT INTO pets (pet_external_id, user_id, name, date_created, type) VALUES (${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`;
   await executeQuery(insertStatement);
+
+  // await addPetStats(externalID);
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
