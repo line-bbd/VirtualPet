@@ -34,6 +34,8 @@ const Pages = {
 };
 
 function validRegistration(username, password, confirmPassword, users) {
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{5,}$/;
   const user = users.find((user) => user.username === username);
   if (user) {
     return {
@@ -59,6 +61,15 @@ function validRegistration(username, password, confirmPassword, users) {
       message: "Password field cannot be empty",
     };
   }
+
+  if (passwordRegex.test(password) === false) {
+    return {
+      valid: false,
+      message:
+        "Password must be at least 5 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
+    };
+  }
+
   if (password !== confirmPassword) {
     return {
       valid: false,
