@@ -1,23 +1,15 @@
 class petfinderAPI {
-
-  constructor(){
+  constructor() {
     this.params = new URLSearchParams();
-    this.initParams();
-  }
-
-  async initParams(){
     this.params.append("grant_type", "client_credentials");
-
     this.params.append(
       "client_id",
-      process.env.PETFINDER_CLIENT_ID
+      "NLXT7lOmTd7jPfJNx1W5pzAhETraAzSCQiAuwN5hsbbQJVhU4w"
     );
-
     this.params.append(
       "client_secret",
-      process.env.PETFINDER_CLIENT_SECRET
+      "FOiIjVrCHVf7dopm27ijFBuy9jCSReLbpDAsaMqH"
     );
-
   }
 
   async getToken() {
