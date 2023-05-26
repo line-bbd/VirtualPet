@@ -336,7 +336,11 @@ app.post("/addPet", async (req, res) => {
 app.get("/getDog/:seenExtPetId", async (req, res) => {
   let adoptedDogs = await getExternalIDs();
   console.log(adoptedDogs);
-  let results = await petfinderAPI.getDog(req.params.seenExtPetId,adoptedDogs,1);
+  let results = await petfinderAPI.getDog(
+    req.params.seenExtPetId,
+    adoptedDogs,
+    2
+  );
   res.json(results);
 });
 
