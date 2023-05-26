@@ -1,47 +1,66 @@
 :root {
   --primaryBlue: #3498db;
+
   --primaryOrange: #e67e22;
+
   --background: #34495e;
 }
 
 body {
   margin: 0px;
+
   background-color: var(--primaryOrange);
 }
 
 .card-layout {
   display: flex;
+
   justify-content: space-between;
+
   margin-top: 15.625rem;
 }
 
 .card {
   border-radius: 1.563rem;
+
   box-shadow: 0.625rem 0.625rem 0.063rem rgba(0, 0, 0, 0.3);
+
   width: 31.25rem;
+
   height: 15.625rem;
+
   margin: 1.875rem;
+
   background-color: var(--background);
 }
 
 .card-img {
   width: 100%;
+
   height: 75%;
+
   border-top-left-radius: 1.563rem;
+
   border-top-right-radius: 1.563rem;
+
   image-rendering: crisp-edges;
 }
 
 .lower-card {
   display: inline-flex;
+
   width: 100%;
 }
 
 .pet-name {
   position: relative;
+
   left: 1.25rem;
+
   font-size: 1.5rem;
+
   font-family: "Courier New", monospace;
+
   color: azure;
 }
 
@@ -51,14 +70,23 @@ body {
 
 .card-button {
   position: relative;
+
   margin: 0.313rem;
+
   background-color: var(--primaryOrange);
+
   border: none;
+
   padding: 0.313rem;
+
   font-size: 1.875rem;
+
   height: 3.125rem;
+
   width: 3.125rem;
+
   cursor: pointer;
+
   border-radius: 30%;
 }
 
@@ -76,33 +104,51 @@ button:hover {
 
 #canvas {
   height: 100%;
+
   width: 100%;
 }
 
 .arrows {
   width: 7rem;
+
   height: 7rem;
+
   position: absolute;
 }
 
 .animationLbls {
   width: 7rem;
+
   height: 2.5rem;
+
   position: absolute;
+
   top: 2rem;
 
   font-family: "Roboto", sans-serif;
+
   font-size: 2rem;
+
   font-weight: 500;
+
   letter-spacing: 0.05rem;
+
   font-style: italic;
+
   color: #000000;
+
   background-color: #837569;
+
   border-radius: 2rem;
+
   -webkit-border-radius: 2rem;
+
   -moz-border-radius: 2rem;
+
   padding: 1rem 1rem;
+
   opacity: 0.7;
+
   text-align: left;
 }
 
@@ -126,172 +172,242 @@ button:hover {
   left: 50rem;
 }
 
-#nameLbl{
-  right:10rem;
+#nameLbl {
+  right: 10rem;
 
   width: 10rem;
+
   height: 3rem;
+
   font-size: 2.5rem;
+
   /* font-weight: 600; */
+
   background-color: var(--background);
+
   color: var(--primaryBlue);
+
   text-align: center;
 }
 
 .imgIcons {
   width: 2rem;
+
   height: 2rem;
 }
 
 .animationBtns {
   width: 7rem;
+
   height: 4rem;
 
   -webkit-border-radius: 0.1rem;
+
   -moz-border-radius: 0.1rem;
+
   border-radius: 2rem;
+
   color: var(--primaryOrange);
+
   font-family: Helvetica;
+
   font-size: 2rem;
+
   padding: 0.5rem;
+
   background-color: var(--background);
+
   border: solid var(--primaryOrange) 0.1rem;
+
   text-decoration: none;
+
   display: inline-block;
+
   cursor: pointer;
+
   text-align: center;
+
   opacity: 0.7;
 }
 
 .animationBtns:hover {
   background: var(--primaryBlue);
+
   border: solid var(--primaryOrange) 5px;
+
   -webkit-border-radius: 100px;
+
   -moz-border-radius: 100px;
+
   border-radius: 100px;
+
   text-decoration: none;
 }
 
 #feedBtn {
   position: absolute;
+
   bottom: 10rem;
+
   right: 15rem;
 }
 
 #walkBtn {
   position: absolute;
+
   bottom: 5rem;
+
   right: 15rem;
 }
 
 #cleanBtn {
   position: absolute;
+
   bottom: 5rem;
+
   right: 5rem;
 }
 
 #healBtn {
   position: absolute;
+
   bottom: 10rem;
+
   right: 5rem;
 }
 
 body {
   margin: 0;
+
   padding-bottom: 100px;
+
   background-color: var(--background);
+
   font-family: "Inter";
+
   color: white;
 }
+
 @media (min-width: 1000px) {
   .con1 {
     display: grid;
 
     grid-template-columns: 1fr 2fr 1fr;
+
     grid-template-rows: auto;
   }
+
   .Adoptbutton {
     position: absolute;
+
     bottom: 0;
+
     right: 0;
-    margin-right: 30px;
+
+    margin-right: 1.5rem;
   }
 }
+
 #adoptForm {
   width: 75%;
+
   height: 100%;
+
   background-color: rgba(52, 152, 219, 0.5);
 
   margin: 0 auto;
-  padding:0;
+
+  padding: 0;
+
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-
 #top-bar h1 {
-  font-size: 27px;
+  font-size: 2rem;
 }
 
 .input label {
-  font-size: 36px;
+  font-size: 2.25rem;
+
   display: inline-block;
 }
 
 .container {
   text-align: center;
+
   position: relative;
+
   justify-content: center;
 }
+
 .inputSection {
   display: flex;
+
   justify-content: space-between;
-  padding: 20px 20px 0 20px;
+
+  padding: 1.5rem 1.5rem 0 1.5rem;
 }
 
 .inputSection input {
   display: inline-block;
 
   width: 50%;
-  height: 35px;
+
+  height: 2rem;
+
   border-radius: 5px;
+
   border: none;
 }
 
 .Adoptbutton {
-  margin-top: 10px;
+  margin-top: 0.6rem;
+
   border-radius: 5px;
+
   border: none;
-  height: 64px;
-  width: 280px;
+
+  height: 4rem;
+
+  width: 18rem;
+
   color: white;
+
   background-color: var(--primaryOrange);
 }
+
 .image {
   position: relative;
-  margin:0;
-padding: 20px 10px;
 
-box-sizing: border-box; 
+  margin: 0;
+
+  padding: 1.5rem 1.5rem;
+
+  box-sizing: border-box;
 }
 
 .image img {
+  width: 90%;
 
-width: 90%;
   height: inherit;
 }
 
 #RefreshButton {
   display: flex;
-max-width: fit-content;
-  justify-content: left;
-  padding: 10px;
-  border: 0px;
 
+  max-width: fit-content;
+
+  justify-content: left;
+
+  padding: 0.6rem;
+
+  border: 0px;
 }
 
 #RefreshButton:active {
   color: #00000058;
 }
+
 #RefreshButton:hover {
   cursor: pointer;
 }

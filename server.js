@@ -365,12 +365,6 @@ app.get("/getUserPets/:userId", async (req, res) => {
   res.json(data);
 });
 
-// app.get("/getExternalIDs", async (req, res) => {
-//   const selectStatement = "SELECT pet_external_id From pets";
-//   const data = JSON.parse(JSON.stringify(await executeQuery(selectStatement)));
-//   res.json(data);
-// });
-
 // api query to 'select' one of the existing user's pets
 app.post("/selectPet/:pet_id", async (req, res) => {
   const pet_id = req.params.pet_id;
