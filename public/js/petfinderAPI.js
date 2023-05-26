@@ -22,14 +22,14 @@ class petfinderAPI {
     return myJson;
   }
 
-  async getDog(seenExtPetId, page) {
+  async getDog(seenExtPetId, adoptedDogs, page) {
     let allDogs, foundDogs, retDog;
 
     let dogFound = false;
     while (!dogFound) {
       allDogs = await this.getAllDogsByPage(page);
       console.log(allDogs);
-      foundDogs = this.filterDogs(seenExtPetId, allDogs);
+      foundDogs = this.filterDogs(seenExtPetId, adoptedDogs,allDogs);
 
       if (foundDogs.length == 0) {
         page = page + 1;
@@ -60,12 +60,14 @@ class petfinderAPI {
   // 1) Has at least 1 picture
   // 2) Has at least 1 trait
   // 3) Has not been seen by this specific user before
-  filterDogs(seenExtPetId, allDogs) {
+  // 4) Dogs not adopted before
+  filterDogs(seenExtPetId,adoptedDogs, allDogs) {
     let foundDogs = allDogs["animals"].filter(
       (dog) =>
         dog.photos.length > 0 &&
         dog.tags.length > 0 &&
-        !seenExtPetId.includes(dog.id)
+        !seenExtPetId.includes(dog.id) &&
+        !adoptedDogs.includes(dog.id)
     );
     return foundDogs;
   }

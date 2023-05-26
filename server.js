@@ -66,6 +66,11 @@ const getPetList = async (user_id) => {
   return await executeQuery(petListQuery);
 };
 
+const getExternalIDs = async () => {
+  const petListQuery = `SELECT pet_external_id From pets;`;
+  return await executeQuery(petListQuery);
+};
+
 const selectPet = async (pet_id) => {
   const selectPetQuery = `SELECT * FROM Pets WHERE pet_id = ${pet_id};`;
   const data = JSON.parse(
@@ -330,7 +335,9 @@ app.post("/addPet", async (req, res) => {
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
-  let results = await petfinderAPI.getDog(req.params.seenExtPetId, 1);
+  let adoptedDogs = await getExternalIDs();
+  console.log(adoptedDogs);
+  let results = await petfinderAPI.getDog(req.params.seenExtPetId,adoptedDogs,1);
   res.json(results);
 });
 
@@ -355,11 +362,12 @@ app.get("/getUserPets/:userId", async (req, res) => {
   res.json(data);
 });
 
-app.get("/getExternalIDs", async (req, res) => {
-  const selectStatement = "SELECT pet_external_id From pets";
-  const data = JSON.parse(JSON.stringify(await executeQuery(selectStatement)));
-  res.json(data);
-});
+// app.get("/getExternalIDs", async (req, res) => {
+//   const selectStatement = "SELECT pet_external_id From pets";
+//   const data = JSON.parse(JSON.stringify(await executeQuery(selectStatement)));
+//   res.json(data);
+// });
+
 // api query to 'select' one of the existing user's pets
 app.post("/selectPet/:pet_id", async (req, res) => {
   const pet_id = req.params.pet_id;
