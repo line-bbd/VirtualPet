@@ -25,18 +25,18 @@
     </section>
       <article class="con1">
         <section></section>
-        <form id="adoptForm">
+        <form id="adoptForm" method="post">
           <i class="fas fa-sync-alt" id="RefreshButton" style="font-size: 36px;"></i>
           <section class="inputSection">
-            <label for="name" id="nameLbl">Name</label>
+            <label for="name" id="nameLabel">Name</label>
             <input type="text" id="nameInput" name="user_name" readonly />
           </section>
           <section class="inputSection">
-            <label for="Type" id="typeLbl">Type</label>
+            <label for="Type" id="typeLabel">Type</label>
             <input name="user_mail" id="typeInput" readonly />
           </section>
           <section class="inputSection">
-            <label for="type" id="traitLbl">Trait</label>
+            <label for="type" id="traitLabel">Trait</label>
             <input name="Trait" id="traitInput" readonly />
           </section>
           <figure class="image">
@@ -44,7 +44,7 @@
           </figure>
         </form>
         <section class="formButton">
-          <button class="Adoptbutton">
+          <button class="Adoptbutton" form="adoptForm">
             Adopt a new pet
           </button>
         </section>
