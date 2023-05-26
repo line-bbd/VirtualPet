@@ -76,23 +76,9 @@ const selectPet = async (pet_id) => {
 };
 
 const getPetStats = async (pet_id) => {
-  // check if pet_id first exists in pet_stats table
   const petQuery = `SELECT * FROM Pet_stats WHERE pet_id = ${pet_id};`;
-  const result = await executeQuery(petQuery);
-  if (result.length === 0) {
-    const data = {
-      health: 100,
-      happiness: 100,
-      energy: 100,
-      fed: 100,
-      hygiene: 100,
-    };
-    setPetStats(data);
-    return data;
-  } else {
-    const data = JSON.parse(JSON.stringify(result[0]));
-    return data;
-  }
+  const data = JSON.parse(JSON.stringify((await executeQuery(petQuery))[0]));
+  return data;
 };
 
 const getPetInfo = async (pet_id) => {
@@ -276,6 +262,20 @@ app.get("/logout", (req, res) => {
   res.redirect(Pages.LOGIN.url);
 });
 
+const getSpecificPet = async (user_id, pet_name) => {
+  const petQuery = `SELECT * FROM Pets WHERE user_id = ${user_id} AND name = '${pet_name}';`;
+
+  return await executeQuery(petQuery);
+};
+
+const createPetStats = async (pet_id) => {
+  const createQuery = `Insert into pet_stats VALUES(${pet_id},100,100,100,100);`;
+
+  console.log(createQuery);
+
+  await executeQuery(createQuery);
+};
+
 app.get(Pages.VIEWPET.url + "/getPetStats", async (req, res) => {
   const petInfo = await getPetInfo(petInSession.pet_id);
   petInSession.name = petInfo.name;
@@ -322,11 +322,10 @@ app.post("/addPet", async (req, res) => {
   const name = req.body.name;
   const dateCreated = req.body.dateCreated;
   const type = req.body.type;
-
   const insertStatement = `INSERT INTO pets (pet_external_id, user_id, name, date_created, type) VALUES (${externalID}, ${userID}, '${name}', '${dateCreated}', '${type}')`;
   await executeQuery(insertStatement);
-
-  // await addPetStats(externalID);
+  const petRecord = await getSpecificPet(userID, name);
+  await createPetStats(petRecord[0].pet_id);
 });
 
 app.get("/getDog/:seenExtPetId", async (req, res) => {
