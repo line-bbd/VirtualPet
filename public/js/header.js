@@ -168,5 +168,5 @@ class HeaderLoggedIn extends HTMLElement {
   }
 }
 
-customElements.define('header-out-component', HeaderNotLoggedIn);
-customElements.define('header-in-component', HeaderLoggedIn);
+customElements.define("header-out-component", HeaderNotLoggedIn);
+customElements.define("header-in-component", HeaderLoggedIn);
