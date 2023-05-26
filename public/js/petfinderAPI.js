@@ -29,7 +29,7 @@ class petfinderAPI {
     while (!dogFound) {
       allDogs = await this.getAllDogsByPage(page);
       console.log(allDogs);
-      foundDogs = this.filterDogs(seenExtPetId, adoptedDogs,allDogs);
+      foundDogs = this.filterDogs(seenExtPetId, adoptedDogs, allDogs);
 
       if (foundDogs.length == 0) {
         page = page + 1;
@@ -61,13 +61,14 @@ class petfinderAPI {
   // 2) Has at least 1 trait
   // 3) Has not been seen by this specific user before
   // 4) Dogs not adopted before
-  filterDogs(seenExtPetId,adoptedDogs, allDogs) {
+  filterDogs(seenExtPetId, adoptedDogs, allDogs) {
     let foundDogs = allDogs["animals"].filter(
       (dog) =>
         dog.photos.length > 0 &&
         dog.tags.length > 0 &&
         !seenExtPetId.includes(dog.id) &&
-        !adoptedDogs.includes(dog.id)
+        !adoptedDogs.includes(dog.id) &&
+        dog.name != "Pluto and Skippy"
     );
     return foundDogs;
   }
